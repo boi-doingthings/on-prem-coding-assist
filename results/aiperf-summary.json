@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "date": "2026-09-22",
+  "aiperf_version": "0.12.0",
+  "aiperf_image_digest": "sha256:d22eb02bccadcd2acbbd905a1742f1e642f2bdd7bc3a0377cebda685a233902d",
+  "served_model": "Qwen/Qwen3.5-122B-A10B",
+  "checkpoint": "nvidia/Qwen3.5-122B-A10B-NVFP4",
+  "topology": "1P2D",
+  "workload": {
+    "dataset": "synthetic",
+    "random_seed": 42,
+    "target_input_tokens": 800,
+    "target_output_tokens": 64,
+    "warmup_requests": 3,
+    "profile_requests": 16,
+    "streaming": true,
+    "use_server_token_count": true
+  },
+  "runs": [
+    {"concurrency": 1, "valid_requests": 16, "request_throughput": 1.5767961436, "output_token_throughput": 100.9149531888, "ttft_avg_ms": 223.966888625, "ttft_p99_ms": 239.6930681, "itl_avg_ms": 6.4417595813, "latency_avg_ms": 629.79774225, "latency_p99_ms": 669.1499612},
+    {"concurrency": 2, "valid_requests": 16, "request_throughput": 2.555820911, "output_token_throughput": 163.5725383028, "ttft_avg_ms": 337.7333311875, "ttft_p99_ms": 383.4426485, "itl_avg_ms": 6.9677272262, "latency_avg_ms": 776.7001464375, "latency_p99_ms": 824.3988939},
+    {"concurrency": 4, "valid_requests": 16, "request_throughput": 3.9881648446, "output_token_throughput": 255.2425500572, "ttft_avg_ms": 464.205951, "ttft_p99_ms": 832.30365375, "itl_avg_ms": 7.8113447827, "latency_avg_ms": 956.3206723125, "latency_p99_ms": 1306.94207385},
+    {"concurrency": 8, "valid_requests": 0, "errors": 8, "cancelled": 8, "request_timeout_seconds": 120, "service_restart_required": true}
+  ]
+}

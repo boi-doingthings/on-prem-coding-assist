@@ -1,0 +1,10 @@
+.env
+.env.*
+!.env.example
+artifacts/
+bin/
+.state/
+upstream/
+*.log
+__pycache__/
+*.py[cod]

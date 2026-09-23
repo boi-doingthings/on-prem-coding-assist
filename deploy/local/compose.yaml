@@ -1,0 +1,16 @@
+services:
+  nats:
+    image: nats:2.11.4
+    command: ["-c", "/etc/nats/nats-server.conf"]
+    network_mode: host
+    volumes:
+      - ./nats-server.conf:/etc/nats/nats-server.conf:ro
+    restart: unless-stopped
+
+  etcd:
+    image: bitnamilegacy/etcd:3.6.1
+    network_mode: host
+    environment:
+      ALLOW_NONE_AUTHENTICATION: "yes"
+    restart: unless-stopped
+
