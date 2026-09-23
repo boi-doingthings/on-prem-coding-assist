@@ -7,6 +7,7 @@ model="${DYNAMO_MODEL:-nvidia/Qwen3.5-122B-A10B-NVFP4}"
 served_model="${DYNAMO_SERVED_MODEL:-Qwen/Qwen3.5-122B-A10B}"
 prefill_gpu="${DYNAMO_PREFILL_GPU:-0}"
 decode_gpus="${DYNAMO_DECODE_GPUS:-1,2}"
+enable_prefix_caching="${DYNAMO_ENABLE_PREFIX_CACHING:-1}"
 prefill_kv_transfer_config='{"kv_connector":"NixlConnector","kv_role":"kv_producer","kv_connector_extra_config":{"num_threads":8}}'
 decode_kv_transfer_config='{"kv_connector":"NixlConnector","kv_role":"kv_consumer","kv_connector_extra_config":{"num_threads":8}}'
 
@@ -27,6 +28,11 @@ export UCX_RCACHE_MAX_UNRELEASED=1024
 
 mkdir -p "${HOME}" "${XDG_CACHE_HOME}" "${TRITON_CACHE_DIR}" \
   "${VLLM_CONFIG_ROOT}" "${VLLM_CACHE_ROOT}" "${HF_MODULES_CACHE}"
+
+prefix_caching_args=()
+if [[ "${enable_prefix_caching}" == "1" ]]; then
+  prefix_caching_args+=(--enable-prefix-caching)
+fi
 
 python3 -m dynamo.frontend \
   --router-mode kv \
@@ -52,7 +58,7 @@ python3 -m dynamo.vllm \
   --moe-backend=flashinfer_trtllm \
   --mamba-ssm-cache-dtype=float16 \
   --no-disable-hybrid-kv-cache-manager \
-  --enable-prefix-caching \
+  "${prefix_caching_args[@]}" \
   --block-size=64 \
   --max-num-seqs=32 \
   --max-num-batched-tokens=16384 \
@@ -84,7 +90,7 @@ for gpu in "${gpus[@]}"; do
     --moe-backend=flashinfer_trtllm \
     --mamba-ssm-cache-dtype=float16 \
     --no-disable-hybrid-kv-cache-manager \
-    --enable-prefix-caching \
+    "${prefix_caching_args[@]}" \
     --block-size=64 \
     --max-num-seqs=128 \
     --max-num-batched-tokens=16384 \

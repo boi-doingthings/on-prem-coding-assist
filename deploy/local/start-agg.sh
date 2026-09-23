@@ -8,6 +8,7 @@ served_model="${DYNAMO_SERVED_MODEL:-Qwen/Qwen3.5-122B-A10B}"
 gpu_list="${DYNAMO_AGG_GPUS:-0}"
 enable_multimodal="${DYNAMO_ENABLE_MULTIMODAL:-1}"
 qwen35_nvfp4="${DYNAMO_QWEN35_NVFP4:-1}"
+enable_prefix_caching="${DYNAMO_ENABLE_PREFIX_CACHING:-1}"
 
 export PYTHONHASHSEED=0
 export HF_HOME=/model-cache
@@ -35,12 +36,14 @@ fi
 model_args=(
   --dyn-reasoning-parser qwen3
   --tensor-parallel-size=1
-  --enable-prefix-caching
   --block-size=64
   --max-num-seqs=32
   --max-num-batched-tokens=16384
   --gpu-memory-utilization=0.9
 )
+if [[ "${enable_prefix_caching}" == "1" ]]; then
+  model_args+=(--enable-prefix-caching)
+fi
 if [[ "${qwen35_nvfp4}" == "1" ]]; then
   model_args+=(
     --dyn-tool-call-parser qwen3_coder

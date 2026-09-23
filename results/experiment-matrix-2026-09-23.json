@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "date": "2026-09-23",
+  "aiperf_version": "0.12.0",
+  "served_model": "Qwen/Qwen3.5-122B-A10B",
+  "checkpoint": "nvidia/Qwen3.5-122B-A10B-NVFP4",
+  "workload_defaults": {
+    "streaming": true,
+    "temperature": 0,
+    "ignore_eos": true,
+    "random_seed": 42,
+    "isl_stddev": 0,
+    "osl_stddev": 0
+  },
+  "disaggregated_runs": [
+    {"name":"sustained-c4","concurrency":4,"requests":128,"valid":128,"target_isl":800,"observed_isl_avg":810.171875,"osl":64,"request_throughput":5.96405032296097,"output_token_throughput":381.6992206695021,"ttft_avg_ms":225.1484353828125,"ttft_p99_ms":356.91947319,"itl_avg_ms":6.983246750124008,"latency_avg_ms":665.092980640625,"latency_p99_ms":869.13406977},
+    {"name":"prefill-heavy-c4","concurrency":4,"requests":32,"valid":32,"target_isl":8192,"observed_isl_avg":8202.1875,"osl":64,"request_throughput":4.432475289826366,"output_token_throughput":283.6784185488874,"ttft_avg_ms":420.03732809375,"ttft_p99_ms":626.90942006,"itl_avg_ms":6.764221256448412,"latency_avg_ms":846.18326725,"latency_p99_ms":1087.30755187},
+    {"name":"decode-heavy-c4","concurrency":4,"requests":32,"valid":32,"target_isl":800,"observed_isl_avg":810.1875,"osl":512,"request_throughput":1.010086938104165,"output_token_throughput":517.1645123093325,"ttft_avg_ms":269.182692625,"ttft_p99_ms":401.34322719000005,"itl_avg_ms":7.012545040056262,"latency_avg_ms":3852.59320809375,"latency_p99_ms":4454.50287587},
+    {"name":"boundary-c5","concurrency":5,"requests":40,"valid":40,"target_isl":800,"osl":64,"request_throughput":6.532227716536837,"output_token_throughput":418.06257385835755},
+    {"name":"boundary-c6","concurrency":6,"requests":48,"valid":48,"target_isl":800,"osl":64,"request_throughput":8.026481547164824,"output_token_throughput":513.6948190185487},
+    {"name":"boundary-c7","concurrency":7,"valid":1,"timeouts":7,"request_timeout_seconds":30,"service_restart_required":true},
+    {"name":"boundary-c8","concurrency":8,"valid":0,"timeouts":8,"request_timeout_seconds":120,"service_restart_required":true}
+  ],
+  "aggregated_controls": [
+    {"prefix_caching":true,"concurrency":8,"requests":64,"valid":64,"request_throughput":8.233366919376815,"output_token_throughput":526.9354828401162},
+    {"prefix_caching":true,"concurrency":16,"valid":0,"timeouts":16,"request_timeout_seconds":30,"service_restart_required":true},
+    {"prefix_caching":false,"concurrency":12,"requests":96,"valid":96,"request_throughput":15.240980396810809,"output_token_throughput":975.4227453958918,"ttft_avg_ms":262.59813916666667,"latency_avg_ms":763.9764124479166},
+    {"prefix_caching":false,"concurrency":14,"requests":28,"valid":7,"timeouts":21,"request_timeout_seconds":30,"service_restart_required":true},
+    {"prefix_caching":false,"concurrency":16,"valid":0,"timeouts":16,"request_timeout_seconds":30,"service_restart_required":true}
+  ],
+  "conclusion": "A per-engine burst threshold around seven concurrent prefills is implicated. Prefix caching is not the primary cause; NIXL is not necessary to reproduce the higher-concurrency wedge."
+}

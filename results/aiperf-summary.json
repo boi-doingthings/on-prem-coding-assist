@@ -21,5 +21,14 @@
     {"concurrency": 2, "valid_requests": 16, "request_throughput": 2.555820911, "output_token_throughput": 163.5725383028, "ttft_avg_ms": 337.7333311875, "ttft_p99_ms": 383.4426485, "itl_avg_ms": 6.9677272262, "latency_avg_ms": 776.7001464375, "latency_p99_ms": 824.3988939},
     {"concurrency": 4, "valid_requests": 16, "request_throughput": 3.9881648446, "output_token_throughput": 255.2425500572, "ttft_avg_ms": 464.205951, "ttft_p99_ms": 832.30365375, "itl_avg_ms": 7.8113447827, "latency_avg_ms": 956.3206723125, "latency_p99_ms": 1306.94207385},
     {"concurrency": 8, "valid_requests": 0, "errors": 8, "cancelled": 8, "request_timeout_seconds": 120, "service_restart_required": true}
-  ]
+  ],
+  "follow_up_2026_09_23": {
+    "details": "experiment-matrix-2026-09-23.json",
+    "disaggregated_safe_boundary": 6,
+    "disaggregated_first_unsafe_concurrency": 7,
+    "aggregated_safe_boundary_tested": 12,
+    "aggregated_first_unsafe_concurrency_tested": 14,
+    "prefix_caching_primary_cause": false,
+    "interpretation": "A per-engine concurrent-prefill threshold around seven is implicated; NIXL is not necessary for the higher aggregate cliff."
+  }
 }

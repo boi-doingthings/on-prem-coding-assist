@@ -295,3 +295,58 @@ The shareable lab sources are being published to
 weights, Enroot state, downloaded runtimes, logs, and secrets remain ignored.
 The compact AIPerf results in `results/` are the version-controlled bridge back
 to the full local raw exports.
+
+## 2026-09-22/23 — Session 004: workload shapes, utilization, and failure isolation
+
+Job `8005` remained on `dgx10`. The AIPerf runner was extended with one-second
+host `nvidia-smi` sampling because no DCGM exporter is available. It now also
+accepts explicit aggregate or disaggregate topology expectations instead of
+hard-coding the 1P/2D readiness gate.
+
+The nominal synthetic workload remains ISL 800 / OSL 64. Chat-template framing
+makes observed prompt length about 810 tokens; this is expected. OSL is exactly
+64 because `ignore_eos=true`. A sustained 1P/2D c4 run completed 128/128 at
+381.70 output tok/s. Shape controls also passed: c4 ISL 8192 / OSL 64 completed
+32/32 at 283.68 output tok/s, and c4 ISL 800 / OSL 512 completed 32/32 at
+517.16 output tok/s.
+
+The disaggregated boundary was narrowed precisely. c5 completed 40/40 and c6
+completed 48/48; c7 produced one valid result and seven timeouts in its first
+burst, after which a new c1 request also timed out. Therefore c6 is the highest
+tested safe burst and c7 the lowest tested unsafe burst for 1P/2D under this
+configuration.
+
+The two-replica aggregate control on GPUs 0–1 removed NIXL and the dedicated
+prefill worker. With prefix caching enabled, c8 completed 64/64 at 526.94
+output tok/s, while c16 timed out all 16 requests in its first burst and wedged
+subsequent c1 service. This proves the low c7 disaggregated cliff belongs to the
+disaggregated prefill path, but it also reveals a shared higher-concurrency
+engine failure that does not require NIXL.
+
+Prefix caching was made configurable and disabled for a second aggregate
+control. c16 still timed out all requests, ruling out prefix caching as the
+primary cause. After restart, c12 completed 96/96 at 975.42 output tok/s; c14
+then completed only 7/28, with 21 30-second timeouts. The combined c6/c7 1P/2D
+and c12/c14 two-replica boundaries strongly implicate a per-engine burst
+threshold near seven concurrent prefills. This is localization, not root cause:
+engine-level scheduler/kernel traces are still needed.
+
+GPU memory allocation did not imply compute saturation. In the sustained 1P/2D
+c4 window, GPU 0/1/2 averaged 11.7%/50.2%/46.6% utilization. The prefill-heavy
+run drove GPU 0 to 99% peak but only 37.1% average; the decode-heavy run drove
+GPUs 1/2 to 62.7%/58.1% average. The successful aggregate c12 control averaged
+34.6%/63.5% on GPUs 0/1 with 97%/99% peaks. GPU 3 remained unavailable because
+of the foreign stale `cuopt_server`. The system therefore has substantial
+compute headroom, but the concurrency wedge currently prevents safe saturation.
+
+The detailed matrix, telemetry summary, artifact names, and interpretation are
+versioned in `results/experiment-matrix-2026-09-23.md` and its JSON companion.
+Aggregate Docker restarts repeatedly paid several minutes of torch compilation
+and FlashInfer autotuning because runtime caches were container-ephemeral; cache
+persistence is now an explicit startup optimization item.
+
+After the controls, the default prefix-enabled 1P/2D topology was restored.
+Health showed one `prefill.generate` and two `backend.generate` instances, the
+structured `get_weather({"city":"Seattle"})` probe passed, and Pi returned
+exactly `PI_DYNAMO_OK`. Recovery evidence is in
+`artifacts/restarts/20260923T063018Z-job-8005-dgx10/`.

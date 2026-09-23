@@ -59,3 +59,25 @@ and disaggregated NIXL scheduling. That hypothesis remains unproven.
 See the [master recordbook](../recordbook/index.html) and
 [chronological notebook](../notes/lab-notebook.md) for the architecture,
 earlier custom probe, NIXL evidence, and incident history.
+
+## 2026-09-23 follow-up
+
+The original c8 row is a failed run, not a slow result: zero requests returned
+any tokens before timeout, and the service remained wedged for a subsequent c1
+probe. A longer run and boundary tests established c6 as the highest tested
+safe 1P/2D burst (48/48, 513.69 output tok/s) and c7 as the lowest unsafe burst
+(1 valid, 7 timeouts).
+
+Two aggregate-worker controls refined causality. c8 passed 64/64, c12 passed
+96/96 at 975.42 output tok/s, c14 returned only 7/28, and c16 returned 0/16.
+Disabling prefix caching did not fix c16. The evidence now favors a per-engine
+concurrent-prefill threshold around seven for this checkpoint/runtime, with
+1P/2D reaching it earlier because all prompts enter one prefill engine. NIXL is
+not required to reproduce the higher aggregate cliff, so it should not be
+named as the sole root cause.
+
+Target ISL/OSL remain 800/64 unless stated otherwise. Observed ISL averages
+about 810 because the chat template adds framing tokens; observed OSL is exactly
+64 because `ignore_eos=true`. See the
+[full follow-up matrix](experiment-matrix-2026-09-23.md) for workload-shape,
+telemetry, aggregate controls, and failure-boundary details.

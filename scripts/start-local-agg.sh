@@ -33,6 +33,7 @@ docker run --detach \
   --env DYNAMO_SERVED_MODEL="${DYNAMO_SERVED_MODEL:-Qwen/Qwen3.5-122B-A10B}" \
   --env DYNAMO_ENABLE_MULTIMODAL="${DYNAMO_ENABLE_MULTIMODAL:-1}" \
   --env DYNAMO_QWEN35_NVFP4="${DYNAMO_QWEN35_NVFP4:-1}" \
+  --env DYNAMO_ENABLE_PREFIX_CACHING="${DYNAMO_ENABLE_PREFIX_CACHING:-1}" \
   "${env_args[@]}" \
   --volume "${model_cache}:/model-cache" \
   --volume "${repo_root}/deploy/local:/lab:ro" \

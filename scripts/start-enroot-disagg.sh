@@ -52,6 +52,7 @@ exec enroot start \
   --env DYNAMO_DECODE_GPUS="${DYNAMO_DECODE_GPUS:-1,2}" \
   --env DYNAMO_MODEL="${DYNAMO_MODEL:-nvidia/Qwen3.5-122B-A10B-NVFP4}" \
   --env DYNAMO_SERVED_MODEL="${DYNAMO_SERVED_MODEL:-Qwen/Qwen3.5-122B-A10B}" \
+  --env DYNAMO_ENABLE_PREFIX_CACHING="${DYNAMO_ENABLE_PREFIX_CACHING:-1}" \
   --env HF_XET_HIGH_PERFORMANCE=1 \
   --env UCX_RCACHE_MAX_UNRELEASED=1024 \
   "${container_name}" bash /lab/start-disagg.sh
