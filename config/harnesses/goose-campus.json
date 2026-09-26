@@ -1,0 +1,10 @@
+{
+  "name": "campus",
+  "engine": "openai",
+  "display_name": "Campus LLM (NVIDIA Dynamo)",
+  "api_key_env": "CAMPUS_LLM_KEY",
+  "base_url": "@@BASE_URL@@/chat/completions",
+  "models": [ { "name": "@@MODEL@@", "context_limit": @@CONTEXT@@ } ],
+  "supports_streaming": true,
+  "requires_auth": true
+}

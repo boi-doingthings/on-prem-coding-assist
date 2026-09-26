@@ -1,0 +1,54 @@
+# Campus gateway stack: LiteLLM (keys/limits) + Postgres + Open WebUI (chat).
+# Runs on a small CPU VM or service node, not on the GPU node.
+#
+#   cp gateway.env.example gateway.env   # fill secrets; never commit gateway.env
+#   docker compose --env-file gateway.env up -d
+#
+# SECURITY: LiteLLM PyPI 1.82.7/1.82.8 were backdoored (2026-03-24). Pin both
+# images below to reviewed release digests (image@sha256:...) — never ":latest".
+services:
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: litellm
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?}
+      POSTGRES_DB: litellm
+    volumes: [pgdata:/var/lib/postgresql/data]
+    restart: unless-stopped
+
+  litellm:
+    image: ${LITELLM_IMAGE:?pin a reviewed ghcr.io/berriai/litellm release digest}
+    command: ["--config", "/app/config.yaml", "--port", "4000"]
+    environment:
+      LITELLM_MASTER_KEY: ${LITELLM_MASTER_KEY:?}
+      DATABASE_URL: postgresql://litellm:${POSTGRES_PASSWORD}@postgres:5432/litellm
+      DYNAMO_BASE_URL: ${DYNAMO_BASE_URL:?}
+      DYNAMO_MAX_PARALLEL: ${DYNAMO_MAX_PARALLEL:-6}
+      LANGFUSE_HOST: ${LANGFUSE_HOST:-}
+      LANGFUSE_PUBLIC_KEY: ${LANGFUSE_PUBLIC_KEY:-}
+      LANGFUSE_SECRET_KEY: ${LANGFUSE_SECRET_KEY:-}
+    volumes: ["./litellm-config.yaml:/app/config.yaml:ro"]
+    ports: ["4000:4000"]
+    depends_on: [postgres]
+    restart: unless-stopped
+
+  open-webui:
+    image: ${OPEN_WEBUI_IMAGE:?pin a reviewed ghcr.io/open-webui/open-webui release}
+    environment:
+      OPENAI_API_BASE_URLS: http://litellm:4000/v1
+      OPENAI_API_KEYS: ${OPEN_WEBUI_LITELLM_KEY:?create with scripts/gateway-issue-keys.sh}
+      WEBUI_SECRET_KEY: ${WEBUI_SECRET_KEY:?}
+      ENABLE_SIGNUP: "false"
+      # Campus SSO (OIDC). Keep Open WebUI branding (license clause > 50 users).
+      ENABLE_OAUTH_SIGNUP: ${ENABLE_OAUTH_SIGNUP:-false}
+      OAUTH_CLIENT_ID: ${OAUTH_CLIENT_ID:-}
+      OAUTH_CLIENT_SECRET: ${OAUTH_CLIENT_SECRET:-}
+      OPENID_PROVIDER_URL: ${OPENID_PROVIDER_URL:-}
+    volumes: [webui:/app/backend/data]
+    ports: ["3000:8080"]
+    depends_on: [litellm]
+    restart: unless-stopped
+
+volumes:
+  pgdata: {}
+  webui: {}

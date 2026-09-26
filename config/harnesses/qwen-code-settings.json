@@ -1,0 +1,9 @@
+{
+  "modelProviders": {
+    "openai": [
+      { "id": "@@MODEL@@", "name": "Campus @@MODEL@@", "baseUrl": "@@BASE_URL@@", "envKey": "CAMPUS_LLM_KEY" }
+    ]
+  },
+  "security": { "auth": { "selectedType": "openai" } },
+  "privacy": { "usageStatisticsEnabled": false }
+}

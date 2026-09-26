@@ -1,0 +1,4 @@
+# ~/.config/crush/crushrc — Crush is FSL-1.1 (source-available), fine for campus use.
+provider add campus --type openai-compat --base-url "@@BASE_URL@@" --api-key "$CAMPUS_LLM_KEY"
+model add campus/@@MODEL@@ --name "Campus model" --context-window @@CONTEXT@@ --default-max-tokens @@MAX_OUTPUT@@ --can-reason true
+option provider-auto-update false

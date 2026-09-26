@@ -1,0 +1,13 @@
+{
+  "language_models": {
+    "openai_compatible": {
+      "campus": {
+        "api_url": "@@BASE_URL@@",
+        "available_models": [
+          { "name": "@@MODEL@@", "display_name": "Campus model", "max_tokens": @@CONTEXT@@ }
+        ]
+      }
+    }
+  },
+  "telemetry": { "diagnostics": false, "metrics": false }
+}

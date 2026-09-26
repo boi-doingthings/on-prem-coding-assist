@@ -1,0 +1,15 @@
+{
+  "providers": {
+    "campus": {
+      "baseUrl": "@@BASE_URL@@",
+      "api": "openai-completions",
+      "apiKey": "${CAMPUS_LLM_KEY}",
+      "compat": { "supportsDeveloperRole": false, "maxTokensField": "max_tokens" },
+      "models": [
+        { "id": "@@MODEL@@", "name": "Campus @@MODEL@@", "reasoning": true, "input": ["text"],
+          "contextWindow": @@CONTEXT@@, "maxTokens": @@MAX_OUTPUT@@,
+          "cost": { "input": 0, "output": 0, "cacheRead": 0, "cacheWrite": 0 } }
+      ]
+    }
+  }
+}

@@ -1,0 +1,10 @@
+# mini-SWE-agent model block: merge into your agent config, e.g.
+#   mini --config mini-swe-agent.yaml
+#   mini-extra swebench --subset verified --slice 0:20 -c mini-swe-agent.yaml -o runs/
+model:
+  model_name: "openai/@@MODEL@@"
+  model_kwargs:
+    api_base: "@@BASE_URL@@"
+    api_key: "${CAMPUS_LLM_KEY}"
+  cost_tracking: "ignore_errors"
+  # model_class: litellm_textbased   # teach the difference: text actions vs native tool calls

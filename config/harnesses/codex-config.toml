@@ -1,0 +1,18 @@
+# ~/.codex/config.toml — Codex CLI speaks only the Responses API (/v1/responses),
+# which the Dynamo frontend implements. Verify multi-turn tool calls in your lab.
+model = "@@MODEL@@"
+model_provider = "campus"
+model_context_window = @@CONTEXT@@
+check_for_update_on_startup = false
+
+[model_providers.campus]
+name = "Campus LLM (NVIDIA Dynamo)"
+base_url = "@@BASE_URL@@"
+env_key = "CAMPUS_LLM_KEY"
+wire_api = "responses"
+
+[analytics]
+enabled = false
+
+[feedback]
+enabled = false

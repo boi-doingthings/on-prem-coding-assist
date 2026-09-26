@@ -1,0 +1,8 @@
+# ~/.aider.conf.yml — Aider parses edits from plain text (SEARCH/REPLACE), so it
+# works even when a model's native tool calling is unreliable.
+openai-api-base: @@BASE_URL@@
+model: openai/@@MODEL@@
+edit-format: diff
+analytics-disable: true
+check-update: false
+# key: export OPENAI_API_KEY=$CAMPUS_LLM_KEY

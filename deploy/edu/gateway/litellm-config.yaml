@@ -1,0 +1,35 @@
+# LiteLLM proxy in front of Dynamo: per-user/per-course keys, budgets, rate
+# limits, usage logs. Dynamo stays on a private network; only this proxy (and
+# Open WebUI) are exposed to campus.
+model_list:
+  - model_name: campus-coder                      # stable alias students configure
+    litellm_params:
+      model: hosted_vllm/Qwen/Qwen3.5-122B-A10B   # served name on the Dynamo frontend
+      api_base: os.environ/DYNAMO_BASE_URL        # e.g. http://gpu-node:8000/v1
+      api_key: "none"
+      # Keep total in-flight requests below the concurrency where your sweep
+      # first failed (this lab: ~6 per engine) — the gateway queues the rest.
+      max_parallel_requests: os.environ/DYNAMO_MAX_PARALLEL
+    model_info:
+      max_input_tokens: 131072
+      max_output_tokens: 16384
+  - model_name: Qwen/Qwen3.5-122B-A10B            # also expose the real name for harness defaults
+    litellm_params:
+      model: hosted_vllm/Qwen/Qwen3.5-122B-A10B
+      api_base: os.environ/DYNAMO_BASE_URL
+      api_key: "none"
+      max_parallel_requests: os.environ/DYNAMO_MAX_PARALLEL
+
+litellm_settings:
+  drop_params: true
+  request_timeout: 600
+  # Opt-in trace capture (see edu/07-traces-to-fine-tuning.md). Enable only
+  # after the consent policy is approved; prefer per-key metadata to route
+  # only consenting users' traffic.
+  # success_callback: ["langfuse"]
+
+general_settings:
+  master_key: os.environ/LITELLM_MASTER_KEY
+  database_url: os.environ/DATABASE_URL
+  # Don't store prompt/response bodies in the spend log unless policy allows it.
+  store_prompts_in_spend_logs: false

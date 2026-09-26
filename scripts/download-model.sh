@@ -9,6 +9,9 @@ runtime_image="${DYNAMO_RUNTIME_IMAGE:-nvcr.io/nvidia/ai-dynamo/vllm-runtime:1.3
 model="${DYNAMO_MODEL:-nvidia/Qwen3.5-122B-A10B-NVFP4}"
 model_cache="${DYNAMO_MODEL_CACHE:-${repo_root}/.state/model-cache}"
 download_user="${DYNAMO_DOWNLOAD_USER:-0:0}"
+# Extra `hf download` arguments, e.g. --exclude 'original/*' --exclude 'metal/*' to skip
+# duplicate weight copies some repos ship (gpt-oss).
+read -ra download_args <<<"${DYNAMO_DOWNLOAD_ARGS:-}"
 
 mkdir -p "${model_cache}"
 env_args=()
@@ -28,4 +31,4 @@ docker run --rm \
   "${env_args[@]}" \
   --volume "${model_cache}:/model-cache" \
   "${runtime_image}" \
-  hf download "${model}"
+  hf download "${model}" "${download_args[@]}"

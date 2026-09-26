@@ -8,3 +8,5 @@ upstream/
 *.log
 __pycache__/
 *.py[cod]
+**/gateway.env
+keys-*.csv
