@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" width="1600" height="900" font-family="Helvetica, Arial, sans-serif" role="img" aria-label="Anatomy of one LLM request">
+<defs><marker id="mdefault" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#52514e"/></marker><marker id="mdefaults" viewBox="0 0 10 10" refX="1" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#52514e"/></marker><marker id="mkv" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#eb6834"/></marker><marker id="mkvs" viewBox="0 0 10 10" refX="1" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#eb6834"/></marker><marker id="mdynamo" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#5f9400"/></marker><marker id="mdynamos" viewBox="0 0 10 10" refX="1" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#5f9400"/></marker><marker id="mclient" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#2a78d6"/></marker><marker id="mclients" viewBox="0 0 10 10" refX="1" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#2a78d6"/></marker></defs>
+<rect width="1600" height="900" fill="#fcfcfb"/>
+<text x="60" y="70.0" font-size="36" fill="#0b0b0b" font-weight="700" text-anchor="start">Anatomy of one LLM request</text>
+<text x="60" y="108.0" font-size="20" fill="#52514e" font-weight="400" text-anchor="start">Why time-to-first-token and tokens-per-second are different problems</text>
+<rect x="60" y="170" width="330" height="170" rx="10" fill="#e8f1fc" stroke="#2a78d6" stroke-width="2"/>
+<text x="225.0" y="226.1" font-size="19" fill="#0d366b" font-weight="700" text-anchor="middle">Prompt in</text>
+<text x="225.0" y="252.1" font-size="15" fill="#0d366b" font-weight="400" text-anchor="middle">system + tools + files +</text>
+<text x="225.0" y="271.6" font-size="15" fill="#0d366b" font-weight="400" text-anchor="middle">conversation</text>
+<text x="225.0" y="291.1" font-size="15" fill="#0d366b" font-weight="400" text-anchor="middle">(1K – 200K tokens)</text>
+<path d="M390.0,255.0 L470.0,255.0" fill="none" stroke="#2a78d6" stroke-width="3" marker-end="url(#mclient)"/>
+<rect x="470" y="150" width="460" height="210" rx="10" fill="#fdeee6" stroke="#eb6834" stroke-width="2"/>
+<text x="700.0" y="217.2" font-size="24" fill="#6b2a0e" font-weight="700" text-anchor="middle">PREFILL</text>
+<text x="700.0" y="245.7" font-size="15" fill="#6b2a0e" font-weight="400" text-anchor="middle">all prompt tokens in parallel</text>
+<text x="700.0" y="265.2" font-size="15" fill="#6b2a0e" font-weight="400" text-anchor="middle">compute-bound (tensor cores, FP8/FP4)</text>
+<text x="700.0" y="284.7" font-size="15" fill="#6b2a0e" font-weight="400" text-anchor="middle">→ builds the KV cache</text>
+<text x="700.0" y="304.2" font-size="15" fill="#6b2a0e" font-weight="400" text-anchor="middle">→ sets TIME TO FIRST TOKEN</text>
+<path d="M930.0,255.0 L1010.0,255.0" fill="none" stroke="#5f9400" stroke-width="3" marker-end="url(#mdynamo)"/>
+<rect x="1010" y="150" width="530" height="210" rx="10" fill="#eef7df" stroke="#5f9400" stroke-width="2"/>
+<text x="1275.0" y="217.2" font-size="24" fill="#233a00" font-weight="700" text-anchor="middle">DECODE</text>
+<text x="1275.0" y="245.7" font-size="15" fill="#233a00" font-weight="400" text-anchor="middle">one token per step for every stream</text>
+<text x="1275.0" y="265.2" font-size="15" fill="#233a00" font-weight="400" text-anchor="middle">memory-bandwidth-bound (reads weights + KV)</text>
+<text x="1275.0" y="284.7" font-size="15" fill="#233a00" font-weight="400" text-anchor="middle">→ sets TOKENS/S PER USER</text>
+<text x="1275.0" y="304.2" font-size="15" fill="#233a00" font-weight="400" text-anchor="middle">batching many users → TOKENS/S PER GPU</text>
+<text x="60" y="430.0" font-size="24" fill="#0b0b0b" font-weight="700" text-anchor="start">What the KV cache costs</text>
+<text x="520" y="430.0" font-size="15" fill="#52514e" font-weight="400" text-anchor="start">KV bytes per token · memory for one 64K-token session (BF16 KV; FP8 halves it)</text>
+<text x="60" y="498.0" font-size="17" fill="#0b0b0b" font-weight="400" text-anchor="start">Qwen3-32B (dense attention)</text>
+<rect x="520" y="478" width="717" height="28" rx="4" fill="#eb6834"/>
+<text x="1248.8" y="498.0" font-size="15" fill="#52514e" font-weight="400" text-anchor="start">256 KiB/token · 16 GiB</text>
+<text x="60" y="560.0" font-size="17" fill="#0b0b0b" font-weight="400" text-anchor="start">DeepSeek-V3 / Kimi-K2 (MLA)</text>
+<rect x="520" y="540" width="193" height="28" rx="4" fill="#eb6834"/>
+<text x="725.2" y="560.0" font-size="15" fill="#52514e" font-weight="400" text-anchor="start">69 KiB/token · 4.3 GiB</text>
+<text x="60" y="622.0" font-size="17" fill="#0b0b0b" font-weight="400" text-anchor="start">gpt-oss-120b (half sliding window)</text>
+<rect x="520" y="602" width="101" height="28" rx="4" fill="#eb6834"/>
+<text x="632.8" y="622.0" font-size="15" fill="#52514e" font-weight="400" text-anchor="start">36 KiB/token · 2.3 GiB</text>
+<text x="60" y="684.0" font-size="17" fill="#0b0b0b" font-weight="400" text-anchor="start">Qwen3.5-122B-A10B (hybrid, ¼ attention)</text>
+<rect x="520" y="664" width="67" height="28" rx="4" fill="#eb6834"/>
+<text x="599.2" y="684.0" font-size="15" fill="#52514e" font-weight="400" text-anchor="start">24 KiB/token · 1.5 GiB</text>
+<text x="60" y="746.0" font-size="17" fill="#0b0b0b" font-weight="400" text-anchor="start">Nemotron-3-Nano (hybrid Mamba)</text>
+<rect x="520" y="726" width="17" height="28" rx="4" fill="#eb6834"/>
+<text x="548.8" y="746.0" font-size="15" fill="#52514e" font-weight="400" text-anchor="start">6 KiB/token · 0.4 GiB</text>
+<text x="60" y="810.0" font-size="17" fill="#52514e" font-weight="400" text-anchor="start" font-style="italic">Architecture decides how many students fit: KV per token × context × concurrent sessions ≤ free GPU memory.</text>
+<text x="60" y="840.0" font-size="17" fill="#52514e" font-weight="400" text-anchor="start" font-style="italic">Decode speed ≈ memory bandwidth ÷ bytes read per token → MoE (few active params) + FP4/FP8 decode fastest.</text>
+</svg>

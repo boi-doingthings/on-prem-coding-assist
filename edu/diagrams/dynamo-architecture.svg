@@ -1,0 +1,97 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" width="1600" height="900" font-family="Helvetica, Arial, sans-serif" role="img" aria-label="NVIDIA Dynamo: one serving layer for every open model">
+<defs><marker id="mdefault" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#52514e"/></marker><marker id="mdefaults" viewBox="0 0 10 10" refX="1" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#52514e"/></marker><marker id="mkv" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#eb6834"/></marker><marker id="mkvs" viewBox="0 0 10 10" refX="1" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#eb6834"/></marker><marker id="mdynamo" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#5f9400"/></marker><marker id="mdynamos" viewBox="0 0 10 10" refX="1" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#5f9400"/></marker><marker id="mclient" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#2a78d6"/></marker><marker id="mclients" viewBox="0 0 10 10" refX="1" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#2a78d6"/></marker></defs>
+<rect width="1600" height="900" fill="#fcfcfb"/>
+<text x="60" y="70.0" font-size="36" fill="#0b0b0b" font-weight="700" text-anchor="start">NVIDIA Dynamo: one serving layer for every open model</text>
+<text x="60" y="108.0" font-size="20" fill="#52514e" font-weight="400" text-anchor="start">OpenAI/Anthropic-compatible APIs in front, KV-aware routing in the middle, any engine on any NVIDIA GPU behind</text>
+<rect x="60" y="170" width="260" height="520" rx="10" fill="#e8f1fc" stroke="#2a78d6" stroke-width="2"/>
+<text x="190" y="205.0" font-size="22" fill="#0d366b" font-weight="700" text-anchor="middle">Clients</text>
+<rect x="80" y="230" width="220" height="125" rx="10" fill="#fcfcfb" stroke="#c9c8c2" stroke-width="2"/>
+<text x="190.0" y="275.6" font-size="17" fill="#52514e" font-weight="700" text-anchor="middle">Coding agents</text>
+<text x="190.0" y="298.4" font-size="13" fill="#52514e" font-weight="400" text-anchor="middle">OpenCode · Cline · Codex</text>
+<text x="190.0" y="315.3" font-size="13" fill="#52514e" font-weight="400" text-anchor="middle">Qwen Code · Pi · Aider</text>
+<rect x="80" y="380" width="220" height="125" rx="10" fill="#fcfcfb" stroke="#c9c8c2" stroke-width="2"/>
+<text x="190.0" y="434.0" font-size="17" fill="#52514e" font-weight="700" text-anchor="middle">Chat &amp; course tools</text>
+<text x="190.0" y="456.8" font-size="13" fill="#52514e" font-weight="400" text-anchor="middle">Open WebUI · LibreChat</text>
+<rect x="80" y="530" width="220" height="125" rx="10" fill="#fcfcfb" stroke="#c9c8c2" stroke-width="2"/>
+<text x="190.0" y="575.6" font-size="17" fill="#52514e" font-weight="700" text-anchor="middle">Evals &amp; research</text>
+<text x="190.0" y="598.4" font-size="13" fill="#52514e" font-weight="400" text-anchor="middle">Harbor · mini-SWE-agent</text>
+<text x="190.0" y="615.3" font-size="13" fill="#52514e" font-weight="400" text-anchor="middle">OpenHands SDK · AIPerf</text>
+<rect x="345" y="300" width="140" height="200" rx="10" fill="#f0efec" stroke="#8a8984" stroke-width="2"/>
+<text x="415.0" y="372.5" font-size="17" fill="#2e2d2a" font-weight="700" text-anchor="middle">Campus</text>
+<text x="415.0" y="393.7" font-size="17" fill="#2e2d2a" font-weight="700" text-anchor="middle">gateway</text>
+<text x="415.0" y="416.5" font-size="13" fill="#2e2d2a" font-weight="400" text-anchor="middle">keys · quotas</text>
+<text x="415.0" y="433.4" font-size="13" fill="#2e2d2a" font-weight="400" text-anchor="middle">limits · logs</text>
+<path d="M320.0,400.0 L345.0,400.0" fill="none" stroke="#2a78d6" stroke-width="2.5" marker-end="url(#mclient)"/>
+<rect x="560" y="170" width="300" height="250" rx="10" fill="#eef7df" stroke="#5f9400" stroke-width="2"/>
+<text x="710.0" y="249.8" font-size="19" fill="#233a00" font-weight="700" text-anchor="middle">Frontend</text>
+<text x="710.0" y="274.7" font-size="14" fill="#233a00" font-weight="400" text-anchor="middle">OpenAI /v1/chat/completions</text>
+<text x="710.0" y="292.9" font-size="14" fill="#233a00" font-weight="400" text-anchor="middle">/v1/responses</text>
+<text x="710.0" y="311.1" font-size="14" fill="#233a00" font-weight="400" text-anchor="middle">Anthropic /v1/messages</text>
+<text x="710.0" y="329.3" font-size="14" fill="#233a00" font-weight="400" text-anchor="middle">chat template · tokenizer</text>
+<text x="710.0" y="347.5" font-size="14" fill="#233a00" font-weight="400" text-anchor="middle">tool &amp; reasoning parsers</text>
+<rect x="560" y="440" width="300" height="250" rx="10" fill="#76b900" stroke="#5f9400" stroke-width="2"/>
+<text x="710.0" y="516.6" font-size="19" fill="#ffffff" font-weight="700" text-anchor="middle">KV-aware router</text>
+<text x="710.0" y="542.6" font-size="15" fill="#ffffff" font-weight="400" text-anchor="middle">global index of every</text>
+<text x="710.0" y="562.1" font-size="15" fill="#ffffff" font-weight="400" text-anchor="middle">worker&#x27;s cached KV blocks</text>
+<text x="710.0" y="581.6" font-size="15" fill="#ffffff" font-weight="400" text-anchor="middle">cost = uncached prefill</text>
+<text x="710.0" y="601.1" font-size="15" fill="#ffffff" font-weight="400" text-anchor="middle">+ current load</text>
+<text x="710.0" y="620.6" font-size="15" fill="#ffffff" font-weight="400" text-anchor="middle">→ pick the cheapest worker</text>
+<path d="M485.0,360.0 L560.0,360.0" fill="none" stroke="#2a78d6" stroke-width="2.5" marker-end="url(#mclient)"/>
+<text x="522.5" y="352.0" font-size="13" fill="#2a78d6" font-weight="600" text-anchor="middle">HTTP</text>
+<path d="M710.0,420.0 L710.0,440.0" fill="none" stroke="#5f9400" stroke-width="2.5" marker-end="url(#mdynamo)"/>
+<rect x="950" y="170" width="590" height="520" rx="10" fill="#eef7df" stroke="#5f9400" stroke-width="2"/>
+<text x="1245" y="205.0" font-size="20" fill="#233a00" font-weight="700" text-anchor="middle">Workers (Slurm job or Kubernetes pods)</text>
+<rect x="970" y="230" width="225" height="200" rx="10" fill="#ffffff" stroke="#5f9400" stroke-width="2"/>
+<text x="1082.5" y="303.0" font-size="19" fill="#233a00" font-weight="700" text-anchor="middle">Prefill workers</text>
+<text x="1082.5" y="327.9" font-size="14" fill="#233a00" font-weight="400" text-anchor="middle">read the prompt</text>
+<text x="1082.5" y="346.1" font-size="14" fill="#233a00" font-weight="400" text-anchor="middle">(compute-bound)</text>
+<text x="1082.5" y="364.3" font-size="14" fill="#233a00" font-weight="400" text-anchor="middle">build KV cache</text>
+<rect x="1295" y="230" width="225" height="200" rx="10" fill="#ffffff" stroke="#5f9400" stroke-width="2"/>
+<text x="1407.5" y="303.0" font-size="19" fill="#233a00" font-weight="700" text-anchor="middle">Decode workers</text>
+<text x="1407.5" y="327.9" font-size="14" fill="#233a00" font-weight="400" text-anchor="middle">generate tokens</text>
+<text x="1407.5" y="346.1" font-size="14" fill="#233a00" font-weight="400" text-anchor="middle">(memory-bound)</text>
+<text x="1407.5" y="364.3" font-size="14" fill="#233a00" font-weight="400" text-anchor="middle">hold many streams</text>
+<path d="M1195.0,320.0 L1295.0,320.0" fill="none" stroke="#eb6834" stroke-width="5" marker-end="url(#mkv)"/>
+<text x="1245.0" y="308.0" font-size="15" fill="#eb6834" font-weight="600" text-anchor="middle">NIXL</text>
+<text x="1245" y="350.0" font-size="13" fill="#eb6834" font-weight="600" text-anchor="middle">KV transfer</text>
+<text x="1245" y="368.0" font-size="13" fill="#eb6834" font-weight="400" text-anchor="middle">NVLink/RDMA</text>
+<rect x="970" y="450" width="550" height="90" rx="10" fill="#ffffff" stroke="#5f9400" stroke-width="2"/>
+<text x="1245.0" y="497.6" font-size="15" fill="#233a00" font-weight="700" text-anchor="middle">…or aggregated workers (prefill + decode on one GPU)</text>
+<text x="1245" y="575.0" font-size="16" fill="#233a00" font-weight="700" text-anchor="middle">Engines: vLLM · SGLang · TensorRT-LLM</text>
+<rect x="975" y="600" width="60" height="55" rx="6" fill="#1f1f1d" stroke="#1f1f1d" stroke-width="2"/>
+<text x="1005.0" y="633.5" font-size="16" fill="#ffffff" font-weight="700" text-anchor="middle">GPU</text>
+<rect x="1043" y="600" width="60" height="55" rx="6" fill="#1f1f1d" stroke="#1f1f1d" stroke-width="2"/>
+<text x="1073.0" y="633.5" font-size="16" fill="#ffffff" font-weight="700" text-anchor="middle">GPU</text>
+<rect x="1111" y="600" width="60" height="55" rx="6" fill="#1f1f1d" stroke="#1f1f1d" stroke-width="2"/>
+<text x="1141.0" y="633.5" font-size="16" fill="#ffffff" font-weight="700" text-anchor="middle">GPU</text>
+<rect x="1179" y="600" width="60" height="55" rx="6" fill="#1f1f1d" stroke="#1f1f1d" stroke-width="2"/>
+<text x="1209.0" y="633.5" font-size="16" fill="#ffffff" font-weight="700" text-anchor="middle">GPU</text>
+<rect x="1247" y="600" width="60" height="55" rx="6" fill="#1f1f1d" stroke="#1f1f1d" stroke-width="2"/>
+<text x="1277.0" y="633.5" font-size="16" fill="#ffffff" font-weight="700" text-anchor="middle">GPU</text>
+<rect x="1315" y="600" width="60" height="55" rx="6" fill="#1f1f1d" stroke="#1f1f1d" stroke-width="2"/>
+<text x="1345.0" y="633.5" font-size="16" fill="#ffffff" font-weight="700" text-anchor="middle">GPU</text>
+<rect x="1383" y="600" width="60" height="55" rx="6" fill="#1f1f1d" stroke="#1f1f1d" stroke-width="2"/>
+<text x="1413.0" y="633.5" font-size="16" fill="#ffffff" font-weight="700" text-anchor="middle">GPU</text>
+<rect x="1451" y="600" width="60" height="55" rx="6" fill="#1f1f1d" stroke="#1f1f1d" stroke-width="2"/>
+<text x="1481.0" y="633.5" font-size="16" fill="#ffffff" font-weight="700" text-anchor="middle">GPU</text>
+<text x="1245" y="677.0" font-size="14" fill="#52514e" font-weight="400" text-anchor="middle">A100 · H100 · H200 · B200 · B300</text>
+<path d="M860.0,540.0 L950.0,540.0" fill="none" stroke="#5f9400" stroke-width="3" marker-end="url(#mdynamo)"/>
+<text x="905.0" y="530.0" font-size="13" fill="#5f9400" font-weight="600" text-anchor="middle">requests</text>
+<path d="M950.0,620.0 L860.0,620.0" fill="none" stroke="#eb6834" stroke-width="2.5" stroke-dasharray="8 6" marker-end="url(#mkv)"/>
+<text x="905.0" y="644.0" font-size="13" fill="#eb6834" font-weight="600" text-anchor="middle">KV events</text>
+<rect x="60" y="740" width="360" height="110" rx="10" fill="#f0efec" stroke="#8a8984" stroke-width="2"/>
+<text x="240.0" y="777.1" font-size="19" fill="#2e2d2a" font-weight="700" text-anchor="middle">Discovery plane</text>
+<text x="240.0" y="802.0" font-size="14" fill="#2e2d2a" font-weight="400" text-anchor="middle">etcd · Kubernetes · file</text>
+<text x="240.0" y="820.2" font-size="14" fill="#2e2d2a" font-weight="400" text-anchor="middle">(who is serving what)</text>
+<rect x="440" y="740" width="360" height="110" rx="10" fill="#f0efec" stroke="#8a8984" stroke-width="2"/>
+<text x="620.0" y="786.2" font-size="19" fill="#2e2d2a" font-weight="700" text-anchor="middle">Event &amp; request planes</text>
+<text x="620.0" y="811.1" font-size="14" fill="#2e2d2a" font-weight="400" text-anchor="middle">ZMQ/NATS events · TCP requests</text>
+<rect x="820" y="740" width="340" height="110" rx="10" fill="#eef7df" stroke="#5f9400" stroke-width="2"/>
+<text x="990.0" y="777.1" font-size="19" fill="#233a00" font-weight="700" text-anchor="middle">Planner</text>
+<text x="990.0" y="802.0" font-size="14" fill="#233a00" font-weight="400" text-anchor="middle">SLA-driven autoscaling of</text>
+<text x="990.0" y="820.2" font-size="14" fill="#233a00" font-weight="400" text-anchor="middle">prefill vs decode pools</text>
+<rect x="1180" y="740" width="360" height="110" rx="10" fill="#f0efec" stroke="#8a8984" stroke-width="2"/>
+<text x="1360.0" y="777.1" font-size="19" fill="#2e2d2a" font-weight="700" text-anchor="middle">Observability</text>
+<text x="1360.0" y="802.0" font-size="14" fill="#2e2d2a" font-weight="400" text-anchor="middle">Prometheus metrics · traces</text>
+<text x="1360.0" y="820.2" font-size="14" fill="#2e2d2a" font-weight="400" text-anchor="middle">Grafana dashboards</text>
+</svg>

@@ -1,0 +1,1081 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>NVIDIA DSX OS — Inference Serving Stack</title>
+<style>
+  :root {
+    --nv-green: #76b900;
+    --nv-green-dark: #5a8f00;
+    --bg: #0b0e0a;
+    --panel: #12160f;
+    --panel-2: #171c13;
+    --border: #2a3320;
+    --text: #e8eee0;
+    --muted: #9fb089;
+    --chip: #1e2617;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: radial-gradient(1200px 600px at 50% -10%, #14200a 0%, var(--bg) 60%);
+    color: var(--text);
+    line-height: 1.5;
+  }
+  header {
+    text-align: center;
+    padding: 48px 20px 24px;
+    border-bottom: 1px solid var(--border);
+  }
+  header h1 {
+    margin: 0 0 8px;
+    font-size: 2.1rem;
+    letter-spacing: -0.5px;
+  }
+  header h1 span { color: var(--nv-green); }
+  header p {
+    margin: 6px auto;
+    max-width: 760px;
+    color: var(--muted);
+  }
+  .tags {
+    margin-top: 16px;
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .tag {
+    background: var(--chip);
+    border: 1px solid var(--border);
+    color: var(--nv-green);
+    padding: 4px 12px;
+    border-radius: 100px;
+    font-size: 0.78rem;
+    font-weight: 600;
+  }
+  main {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 32px 20px 64px;
+  }
+  .flow-note {
+    text-align: center;
+    color: var(--muted);
+    font-size: 0.85rem;
+    margin-bottom: 20px;
+  }
+  .hld {
+    background: linear-gradient(180deg, var(--panel-2), var(--panel));
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 22px 18px 8px;
+    margin-bottom: 40px;
+  }
+  .hld h2 {
+    text-align: center;
+    margin: 0 0 4px;
+    font-size: 1.3rem;
+  }
+  .hld h2 span { color: var(--nv-green); }
+  .hld .cap {
+    text-align: center;
+    color: var(--muted);
+    font-size: 0.82rem;
+    margin: 0 0 8px;
+  }
+  .hld svg { width: 100%; height: auto; display: block; }
+  .hld svg text { font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+  .hld-band { fill: #171c13; stroke: #2a3320; stroke-width: 1; }
+  .hld-accent { fill: var(--nv-green); }
+  .hld-node { fill: #12160f; stroke: #2a3320; stroke-width: 1; }
+  .hld-node-bk { fill: #16210b; stroke: rgba(118,185,0,0.45); stroke-width: 1; }
+  .hld-title { fill: #e8eee0; font-size: 15px; font-weight: 700; }
+  .hld-side { fill: #0b0e0a; font-size: 11px; font-weight: 800; letter-spacing: 2px; }
+  .hld-label { fill: var(--nv-green); font-size: 12px; font-weight: 700; }
+  .hld-text { fill: #e8eee0; font-size: 11.5px; font-weight: 600; }
+  .hld-sub { fill: #9fb089; font-size: 10px; }
+  .hld-flow { fill: #9fb089; font-size: 11px; font-weight: 600; }
+  .hld-conn { stroke: var(--nv-green); stroke-width: 2.6; opacity: 0.95; stroke-linecap: round; }
+  .hld-arrow line { stroke: var(--nv-green); stroke-width: 3.2; stroke-linecap: round; }
+  .hld-arrow polygon { fill: var(--nv-green); }
+  /* ---- tabs ---- */
+  .tabbar {
+    display: flex; gap: 8px; justify-content: center;
+    margin: 22px auto 0; flex-wrap: wrap;
+  }
+  .tabbtn {
+    background: var(--chip);
+    border: 1px solid var(--border);
+    color: var(--muted);
+    padding: 10px 22px;
+    border-radius: 100px 100px 0 0;
+    font-size: 0.9rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all .15s ease;
+    border-bottom: none;
+  }
+  .tabbtn:hover { color: var(--text); border-color: var(--nv-green); }
+  .tabbtn.active {
+    background: linear-gradient(180deg, rgba(118,185,0,0.18), var(--panel));
+    color: var(--nv-green);
+    border-color: var(--nv-green);
+  }
+  .tabbtn small { display:block; font-weight:500; font-size:0.68rem; color:var(--muted); }
+  .tabpanel { display: none; }
+  .tabpanel.active { display: block; }
+  /* ---- plane diagram (tab 2) ---- */
+  .plane-band { stroke-width: 1.5; }
+  .plane-ctrl { fill: rgba(80,120,200,0.09); stroke: #4a6bb0; }
+  .plane-inv  { fill: rgba(200,150,60,0.09); stroke: #b0862a; }
+  .plane-data { fill: rgba(118,185,0,0.07); stroke: #5a8f00; }
+  .plane-bus  { fill: rgba(160,90,190,0.12); stroke: #9a55c0; }
+  .p-title { font-size: 16px; font-weight: 800; letter-spacing: .5px; }
+  .p-ctrl-t { fill: #9bb6f0; } .p-inv-t { fill: #e6bd6e; } .p-data-t { fill: #a7e05a; } .p-bus-t { fill: #d6a6ee; }
+  .p-sub { fill: #9fb089; font-size: 11px; font-weight: 500; }
+  .p-node { fill: #12160f; stroke: #2a3320; stroke-width: 1; }
+  .p-node-dsx { fill: #16210b; stroke: #76b900; stroke-width: 1.5; }
+  .p-txt { fill: #e8eee0; font-size: 12px; font-weight: 600; }
+  .p-desc { fill: #9fb089; font-size: 10px; }
+  .p-actor { fill: #1a1e14; stroke: #3a4530; stroke-width: 1; }
+  .p-flow { stroke: #76b900; stroke-width: 2.4; fill: none; stroke-linecap: round; }
+  .p-flow-lbl { fill: #cfe0b6; font-size: 10.5px; font-weight: 700; }
+  .dsx-pill { fill: #76b900; }
+  .dsx-pill-txt { fill: #0b0e0a; font-size: 9.5px; font-weight: 800; letter-spacing:.5px; }
+  .ah { fill: #76b900; }
+  .det-wrap { max-width:960px; margin:20px auto 0; }
+  .intro-t2 { max-width: 900px; margin: 4px auto 22px; text-align:center; color: var(--muted); font-size: 0.92rem; }
+  .maptable { width:100%; max-width:960px; margin: 26px auto 0; border-collapse: collapse; font-size: 0.86rem; }
+  .maptable th, .maptable td { border: 1px solid var(--border); padding: 9px 12px; text-align: left; vertical-align: top; }
+  .maptable th { background: var(--chip); color: var(--nv-green); font-size:0.8rem; text-transform:uppercase; letter-spacing:.5px; }
+  .maptable td b { color: var(--text); }
+  .maptable .pl { font-weight:700; white-space:nowrap; }
+  .pl-ctrl { color:#9bb6f0; } .pl-inv { color:#e6bd6e; } .pl-data { color:#a7e05a; }
+  .stack { display: flex; flex-direction: column; gap: 14px; }
+  .layer {
+    background: linear-gradient(180deg, var(--panel-2), var(--panel));
+    border: 1px solid var(--border);
+    border-left: 5px solid var(--nv-green);
+    border-radius: 14px;
+    padding: 20px 22px;
+    position: relative;
+    transition: transform .15s ease, border-color .15s ease, box-shadow .15s ease;
+  }
+  .layer:hover {
+    transform: translateY(-2px);
+    border-color: var(--nv-green);
+    box-shadow: 0 8px 30px rgba(118,185,0,0.12);
+  }
+  .layer-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+  .layer-title { display: flex; align-items: center; gap: 12px; }
+  .num {
+    background: var(--nv-green);
+    color: #0b0e0a;
+    font-weight: 800;
+    width: 30px; height: 30px;
+    border-radius: 8px;
+    display: grid; place-items: center;
+    font-size: 0.95rem;
+    flex: none;
+  }
+  .layer h2 { margin: 0; font-size: 1.25rem; }
+  .layer .sub { color: var(--muted); font-size: 0.82rem; }
+  .desc { color: var(--text); font-size: 0.92rem; margin: 4px 0 14px; }
+  .desc code { background: var(--chip); padding: 1px 6px; border-radius: 5px; color: var(--nv-green); font-size: 0.85em; }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
+  .chip {
+    background: var(--chip);
+    border: 1px solid var(--border);
+    padding: 4px 10px;
+    border-radius: 8px;
+    font-size: 0.78rem;
+    color: var(--muted);
+  }
+  .chip b { color: var(--text); font-weight: 600; }
+  .benefit {
+    background: rgba(118,185,0,0.07);
+    border: 1px dashed rgba(118,185,0,0.35);
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-size: 0.86rem;
+  }
+  .benefit b { color: var(--nv-green); }
+  .connector {
+    text-align: center;
+    color: var(--border);
+    font-size: 1.4rem;
+    line-height: 0.6;
+    margin: -6px 0;
+  }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  @media (max-width: 640px) { .grid2 { grid-template-columns: 1fr; } }
+  .feature {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 12px;
+    font-size: 0.83rem;
+  }
+  .feature b { color: var(--nv-green); display: block; margin-bottom: 2px; }
+  footer {
+    text-align: center;
+    color: var(--muted);
+    font-size: 0.8rem;
+    padding: 28px 20px 48px;
+    border-top: 1px solid var(--border);
+  }
+  footer a { color: var(--nv-green); text-decoration: none; }
+  .legend {
+    display: flex; gap: 18px; justify-content: center; flex-wrap: wrap;
+    margin: 18px 0 4px; font-size: 0.8rem; color: var(--muted);
+  }
+  .legend span { display: inline-flex; align-items: center; gap: 6px; }
+  .dot { width: 10px; height: 10px; border-radius: 3px; background: var(--nv-green); }
+</style>
+</head>
+<body>
+<header>
+  <h1><span>NVIDIA DSX OS</span> — Inference Serving Stack</h1>
+  <p>A layered, inference-focused reference architecture. Provisioning at the bottom
+  (Base Command Manager), serverless consumption at the top (NVIDIA Cloud Functions).
+  Each layer of the DSX OS turns raw GPU iron into a self-service AI factory.</p>
+  <div class="tags">
+    <span class="tag">Inference-Focused</span>
+    <span class="tag">Bare-metal → Serverless</span>
+    <span class="tag">Kubernetes-native</span>
+    <span class="tag">Disaggregated Serving</span>
+  </div>
+</header>
+
+<main>
+  <div class="tabbar">
+    <button class="tabbtn active" onclick="showTab(1)" id="tabbtn1">Overview<small>BCM → NVCF · HLD</small></button>
+    <button class="tabbtn" onclick="showTab(2)" id="tabbtn2">BCM<small>provisioning · K8s</small></button>
+    <button class="tabbtn" onclick="showTab(3)" id="tabbtn3">GPU + Net Operator<small>drivers · RDMA</small></button>
+    <button class="tabbtn" onclick="showTab(4)" id="tabbtn4">Dynamo<small>PD disagg · routing</small></button>
+    <button class="tabbtn" onclick="showTab(5)" id="tabbtn5">Grove<small>gang scheduling</small></button>
+    <button class="tabbtn" onclick="showTab(6)" id="tabbtn6">NVCF Planes<small>control · invoke · data</small></button>
+  </div>
+
+  <div id="tab1" class="tabpanel active">
+  <p class="flow-note">▲ Consumption / abstraction increases toward the top &#160;•&#160; ▼ Hardware proximity increases toward the bottom</p>
+
+  <!-- HIGH-LEVEL DESIGN (HLD) HIERARCHICAL DIAGRAM -->
+  <section class="hld">
+    <h2><span>DSX OS</span> — High-Level Design (HLD)</h2>
+    <p class="cap">Hierarchical view · 5 tiers · provision → serve → consume</p>
+    <svg viewBox="0 0 1080 800" role="img" aria-label="Hierarchical high-level design of the NVIDIA DSX OS inference stack">
+      <defs>
+        <linearGradient id="railGrad" x1="0" y1="1" x2="0" y2="0">
+          <stop offset="0%"  stop-color="#3a5c00"/>
+          <stop offset="100%" stop-color="#76b900"/>
+        </linearGradient>
+      </defs>
+
+      <!-- ===== left flow rail ===== -->
+      <rect x="26" y="72" width="12" height="690" rx="6" fill="url(#railGrad)" opacity="0.85"/>
+      <path d="M22,74 L32,52 L42,74 Z" fill="#76b900"/>
+      <text class="hld-side" x="60" y="415" transform="rotate(-90 60 415)" text-anchor="middle">PROVISION  →  SERVE  →  CONSUME</text>
+
+      <!-- ================= LAYER 5 · NVCF ================= -->
+      <g>
+        <rect class="hld-band" x="92" y="52" width="958" height="104" rx="14"/>
+        <rect class="hld-accent" x="92" y="52" width="6" height="104" rx="3"/>
+        <text class="hld-title" x="112" y="80">5 · NVCF — NVIDIA Cloud Functions <tspan class="hld-sub">(serverless · top of stack)</tspan></text>
+        <g>
+          <rect class="hld-node" x="112" y="94" width="216" height="50" rx="8"/>
+          <text class="hld-text" x="220" y="115" text-anchor="middle">Endpoints &amp; Functions</text>
+          <text class="hld-sub"  x="220" y="131" text-anchor="middle">lifecycle · routing policy</text>
+
+          <rect class="hld-node" x="342" y="94" width="216" height="50" rx="8"/>
+          <text class="hld-text" x="450" y="115" text-anchor="middle">Scale-to-Zero</text>
+          <text class="hld-sub"  x="450" y="131" text-anchor="middle">pay-per-use autoscale</text>
+
+          <rect class="hld-node" x="572" y="94" width="216" height="50" rx="8"/>
+          <text class="hld-text" x="680" y="115" text-anchor="middle">OpenAI-Compatible API</text>
+          <text class="hld-sub"  x="680" y="131" text-anchor="middle">stream · gRPC / HTTP</text>
+
+          <rect class="hld-node" x="802" y="94" width="216" height="50" rx="8"/>
+          <text class="hld-text" x="910" y="115" text-anchor="middle">Multi-Tenant</text>
+          <text class="hld-sub"  x="910" y="131" text-anchor="middle">auth · metering · isolation</text>
+        </g>
+      </g>
+
+      <g class="hld-arrow"><line x1="571" y1="190" x2="571" y2="172"/><polygon points="562,172 580,172 571,160"/></g>
+
+      <!-- ================= LAYER 4 · GROVE ================= -->
+      <g>
+        <rect class="hld-band" x="92" y="196" width="958" height="104" rx="14"/>
+        <rect class="hld-accent" x="92" y="196" width="6" height="104" rx="3"/>
+        <text class="hld-title" x="112" y="224">4 · Grove — Multi-Node Inference Orchestration <tspan class="hld-sub">(gang scheduling)</tspan></text>
+        <g>
+          <rect class="hld-node" x="112" y="238" width="216" height="50" rx="8"/>
+          <text class="hld-text" x="220" y="259" text-anchor="middle">PodClique</text>
+          <text class="hld-sub"  x="220" y="275" text-anchor="middle">role-based pod group</text>
+
+          <rect class="hld-node" x="342" y="238" width="216" height="50" rx="8"/>
+          <text class="hld-text" x="450" y="259" text-anchor="middle">PodCliqueScalingGroup</text>
+          <text class="hld-sub"  x="450" y="275" text-anchor="middle">gang scale unit</text>
+
+          <rect class="hld-node" x="572" y="238" width="216" height="50" rx="8"/>
+          <text class="hld-text" x="680" y="259" text-anchor="middle">PodGang / PodCliqueSet</text>
+          <text class="hld-sub"  x="680" y="275" text-anchor="middle">min-replica gang sched</text>
+
+          <rect class="hld-node" x="802" y="238" width="216" height="50" rx="8"/>
+          <text class="hld-text" x="910" y="259" text-anchor="middle">Topology-Aware</text>
+          <text class="hld-sub"  x="910" y="275" text-anchor="middle">NVLink / rail placement</text>
+        </g>
+      </g>
+
+      <g class="hld-arrow"><line x1="571" y1="334" x2="571" y2="316"/><polygon points="562,316 580,316 571,304"/></g>
+
+      <!-- ================= LAYER 3 · DYNAMO ================= -->
+      <g>
+        <rect class="hld-band" x="92" y="340" width="958" height="172" rx="14"/>
+        <rect class="hld-accent" x="92" y="340" width="6" height="172" rx="3"/>
+        <text class="hld-title" x="112" y="368">3 · NVIDIA Dynamo — Distributed Inference Engine</text>
+        <!-- features row -->
+        <g>
+          <rect class="hld-node" x="112" y="380" width="216" height="50" rx="8"/>
+          <text class="hld-text" x="220" y="401" text-anchor="middle">PD Disaggregation</text>
+          <text class="hld-sub"  x="220" y="417" text-anchor="middle">prefill ⇄ decode pools</text>
+
+          <rect class="hld-node" x="342" y="380" width="216" height="50" rx="8"/>
+          <text class="hld-text" x="450" y="401" text-anchor="middle">Cache-Aware Routing</text>
+          <text class="hld-sub"  x="450" y="417" text-anchor="middle">KV-aware smart router</text>
+
+          <rect class="hld-node" x="572" y="380" width="216" height="50" rx="8"/>
+          <text class="hld-text" x="680" y="401" text-anchor="middle">KV Block Manager</text>
+          <text class="hld-sub"  x="680" y="417" text-anchor="middle">GPU → CPU → SSD tiering</text>
+
+          <rect class="hld-node" x="802" y="380" width="216" height="50" rx="8"/>
+          <text class="hld-text" x="910" y="401" text-anchor="middle">SLA Planner + NIXL</text>
+          <text class="hld-sub"  x="910" y="417" text-anchor="middle">autoscale · fast transfer</text>
+        </g>
+        <!-- backends row -->
+        <text class="hld-label" x="112" y="470">BACKENDS ▸</text>
+        <g>
+          <rect class="hld-node-bk" x="220" y="452" width="252" height="42" rx="8"/>
+          <text class="hld-text" x="346" y="478" text-anchor="middle">TensorRT-LLM</text>
+
+          <rect class="hld-node-bk" x="486" y="452" width="252" height="42" rx="8"/>
+          <text class="hld-text" x="612" y="478" text-anchor="middle">vLLM</text>
+
+          <rect class="hld-node-bk" x="752" y="452" width="252" height="42" rx="8"/>
+          <text class="hld-text" x="878" y="478" text-anchor="middle">SGLang</text>
+        </g>
+      </g>
+
+      <g class="hld-arrow"><line x1="571" y1="546" x2="571" y2="528"/><polygon points="562,528 580,528 571,516"/></g>
+
+      <!-- ================= LAYER 2 · OPERATORS ================= -->
+      <g>
+        <rect class="hld-band" x="92" y="552" width="958" height="104" rx="14"/>
+        <rect class="hld-accent" x="92" y="552" width="6" height="104" rx="3"/>
+        <text class="hld-title" x="112" y="580">2 · GPU Operator + Network Operator <tspan class="hld-sub">(K8s hardware enablement)</tspan></text>
+        <g>
+          <rect class="hld-node" x="112" y="594" width="446" height="50" rx="8"/>
+          <text class="hld-text" x="335" y="615" text-anchor="middle">GPU Operator</text>
+          <text class="hld-sub"  x="335" y="631" text-anchor="middle">drivers · MIG · DCGM · device plugin · NFD</text>
+
+          <rect class="hld-node" x="572" y="594" width="446" height="50" rx="8"/>
+          <text class="hld-text" x="795" y="615" text-anchor="middle">Network Operator</text>
+          <text class="hld-sub"  x="795" y="631" text-anchor="middle">RDMA / RoCE · GPUDirect · SR-IOV · OFED/DOCA</text>
+        </g>
+      </g>
+
+      <g class="hld-arrow"><line x1="571" y1="690" x2="571" y2="672"/><polygon points="562,672 580,672 571,660"/></g>
+
+      <!-- ================= LAYER 1 · BCM ================= -->
+      <g>
+        <rect class="hld-band" x="92" y="696" width="958" height="104" rx="14"/>
+        <rect class="hld-accent" x="92" y="696" width="6" height="104" rx="3"/>
+        <text class="hld-title" x="112" y="724">1 · BCM — Base Command Manager <tspan class="hld-sub">(bare-metal foundation)</tspan></text>
+        <g>
+          <rect class="hld-node" x="112" y="738" width="290" height="50" rx="8"/>
+          <text class="hld-text" x="257" y="759" text-anchor="middle">Provisioning</text>
+          <text class="hld-sub"  x="257" y="775" text-anchor="middle">image / PXE bare-metal</text>
+
+          <rect class="hld-node" x="418" y="738" width="290" height="50" rx="8"/>
+          <text class="hld-text" x="563" y="759" text-anchor="middle">Kubernetes</text>
+          <text class="hld-sub"  x="563" y="775" text-anchor="middle">deploy &amp; manage cluster</text>
+
+          <rect class="hld-node" x="724" y="738" width="294" height="50" rx="8"/>
+          <text class="hld-text" x="871" y="759" text-anchor="middle">Monitoring &amp; Lifecycle</text>
+          <text class="hld-sub"  x="871" y="775" text-anchor="middle">health · GPU &amp; fleet mgmt</text>
+        </g>
+      </g>
+    </svg>
+  </section>
+
+  <div class="stack">
+
+    <!-- LAYER 5 -->
+    <section class="layer">
+      <div class="layer-head">
+        <div class="layer-title">
+          <div class="num">5</div>
+          <div>
+            <h2>NVCF — NVIDIA Cloud Functions</h2>
+            <div class="sub">Serverless GPU inference &#160;·&#160; Top of stack &#160;·&#160; User-facing AI platform</div>
+          </div>
+        </div>
+      </div>
+      <p class="desc">The consumption layer of DSX OS. Exposes models as <b>serverless functions and
+      endpoints</b> — OpenAI-compatible APIs, streaming, gRPC/HTTP. Owns endpoint lifecycle, routing policy,
+      rate limits, identity/auth, multi-tenancy, metering, and scale-to-zero. Developers ship a model; NVCF
+      handles the GPUs beneath.</p>
+      <div class="chips">
+        <span class="chip"><b>Scale-to-zero</b> autoscaling</span>
+        <span class="chip"><b>Function &amp; endpoint</b> lifecycle</span>
+        <span class="chip"><b>OpenAI-compatible</b> APIs</span>
+        <span class="chip"><b>Multi-tenant</b> isolation &amp; metering</span>
+        <span class="chip"><b>Global</b> multi-region routing</span>
+      </div>
+      <div class="benefit"><b>DSX OS benefit:</b> Turns the GPU cluster into a self-service, pay-per-use inference
+      cloud. Teams consume LLM / multimodal / classic-ML inference through a stable API without touching nodes,
+      operators, or schedulers — maximizing utilization and shrinking time-to-first-token for the business.</div>
+    </section>
+
+    <div class="connector">▲</div>
+
+    <!-- LAYER 4 -->
+    <section class="layer">
+      <div class="layer-head">
+        <div class="layer-title">
+          <div class="num">4</div>
+          <div>
+            <h2>Grove — Multi-Node Inference Orchestration</h2>
+            <div class="sub">Kubernetes API for gang-scheduled, topology-aware inference systems</div>
+          </div>
+        </div>
+      </div>
+      <p class="desc">A single declarative Kubernetes API for orchestrating any AI inference workload — from a
+      single pod to systems sharded across <b>tens of thousands of GPUs</b>. Grove models a disaggregated
+      serving deployment (prefill, decode, router, leader/workers) as one coherent, hierarchically-scaled unit.</p>
+      <div class="grid2">
+        <div class="feature"><b>PodClique</b>Group of pods sharing a role (e.g. prefill, decode, frontend), each independently configured.</div>
+        <div class="feature"><b>PodCliqueScalingGroup</b>Bundles cliques that must scale &amp; schedule together as one gang.</div>
+        <div class="feature"><b>PodCliqueSet / PodGang</b>Top-level replica + scheduler API guaranteeing minimum-replica gang scheduling.</div>
+        <div class="feature"><b>Topology-aware placement</b>Co-locates tightly-coupled components inside NVLink / rail domains.</div>
+        <div class="feature"><b>Hierarchical gang scheduling</b>All-or-nothing startup prevents partial deploys &amp; GPU deadlock.</div>
+        <div class="feature"><b>Startup ordering &amp; multi-level autoscale</b>Enforces leader→worker sequencing; scales roles independently within gang limits.</div>
+      </div>
+      <div class="benefit" style="margin-top:14px"><b>DSX OS benefit:</b> Makes disaggregated, multi-node inference
+      deployable and reliable. Gang scheduling eliminates wasted GPUs from half-scheduled deployments; topology
+      awareness keeps prefill↔decode KV transfers on the fastest interconnects — directly boosting throughput
+      per dollar.</div>
+    </section>
+
+    <div class="connector">▲</div>
+
+    <!-- LAYER 3 -->
+    <section class="layer">
+      <div class="layer-head">
+        <div class="layer-title">
+          <div class="num">3</div>
+          <div>
+            <h2>NVIDIA Dynamo — Distributed Inference Engine</h2>
+            <div class="sub">Datacenter-scale serving runtime &#160;·&#160; three pluggable backends</div>
+          </div>
+        </div>
+      </div>
+      <p class="desc">The inference brain of the stack. Dynamo is a backend-agnostic, distributed serving
+      framework that runs the same disaggregated architecture across all three leading engines:</p>
+      <div class="chips">
+        <span class="chip"><b>TensorRT-LLM</b></span>
+        <span class="chip"><b>vLLM</b></span>
+        <span class="chip"><b>SGLang</b></span>
+      </div>
+      <div class="grid2">
+        <div class="feature"><b>PD Disaggregation</b>Splits <b>Prefill</b> and <b>Decode</b> onto separate, independently-scaled GPU pools — each phase runs on hardware tuned to its compute vs. memory profile.</div>
+        <div class="feature"><b>Cache-Aware Routing</b>KV-aware smart router sends requests to the worker that already holds the matching KV cache — up to ~2× faster time-to-first-token, less recompute.</div>
+        <div class="feature"><b>KV Block Manager (KVBM)</b>Tiers KV cache across GPU → CPU → SSD → remote, extending effective context beyond GPU memory limits.</div>
+        <div class="feature"><b>SLA-driven Planner</b>Profiles load and right-sizes prefill/decode pools to hit latency targets at lowest TCO.</div>
+        <div class="feature"><b>NIXL transfer library</b>Low-latency GPU-to-GPU data / KV movement; ~7× faster replica &amp; model startup.</div>
+        <div class="feature"><b>Backend-agnostic API</b>One control plane, one deployment model — swap engines without re-architecting the service.</div>
+      </div>
+      <div class="benefit" style="margin-top:14px"><b>DSX OS benefit:</b> Decouples the two phases of LLM inference
+      so each scales on its own economics, and reuses KV cache instead of recomputing it. The result is
+      dramatically higher tokens/sec/GPU and lower latency — the core efficiency win of the whole factory.</div>
+    </section>
+
+    <div class="connector">▲</div>
+
+    <!-- LAYER 2 -->
+    <section class="layer">
+      <div class="layer-head">
+        <div class="layer-title">
+          <div class="num">2</div>
+          <div>
+            <h2>GPU Operator + Network Operator</h2>
+            <div class="sub">Kubernetes-native hardware enablement for GPUs &amp; high-speed fabric</div>
+          </div>
+        </div>
+      </div>
+      <p class="desc">Two Kubernetes operators that make accelerated hardware a first-class, self-managing
+      resource on the cluster provisioned below.</p>
+      <div class="grid2">
+        <div class="feature"><b>GPU Operator</b>Automates the full NVIDIA software lifecycle: drivers, container toolkit, device plugin, DCGM monitoring, MIG partitioning, and node feature discovery.</div>
+        <div class="feature"><b>Network Operator</b>Deploys the accelerated networking stack: Mellanox OFED/DOCA drivers, RDMA/RoCE, GPUDirect, SR-IOV, and secondary networks for east-west traffic.</div>
+      </div>
+      <div class="chips" style="margin-top:12px">
+        <span class="chip"><b>MIG</b> multi-instance GPU</span>
+        <span class="chip"><b>DCGM</b> telemetry</span>
+        <span class="chip"><b>GPUDirect RDMA</b></span>
+        <span class="chip"><b>RoCE / InfiniBand</b></span>
+        <span class="chip"><b>SR-IOV</b> &amp; secondary nets</span>
+      </div>
+      <div class="benefit" style="margin-top:14px"><b>DSX OS benefit:</b> Removes manual driver/fabric wrangling and
+      guarantees every node exposes GPUs and RDMA networking consistently. GPUDirect + RoCE give Dynamo's
+      disaggregated KV transfers the low-latency path they need — the fabric that makes multi-node inference fast.</div>
+    </section>
+
+    <div class="connector">▲</div>
+
+    <!-- LAYER 1 -->
+    <section class="layer">
+      <div class="layer-head">
+        <div class="layer-title">
+          <div class="num">1</div>
+          <div>
+            <h2>BCM — Base Command Manager</h2>
+            <div class="sub">Bare-metal provisioning &amp; Kubernetes deployment &#160;·&#160; Foundation of the stack</div>
+          </div>
+        </div>
+      </div>
+      <p class="desc">The bedrock IaaS layer (formerly Bright Cluster Manager). BCM provisions bare-metal GPU nodes
+      from a golden image, then stands up and manages the <b>Kubernetes cluster</b> that everything above runs on —
+      plus monitoring, health, and lifecycle for the whole fleet.</p>
+      <div class="chips">
+        <span class="chip"><b>Bare-metal OS</b> provisioning (PXE / image-based)</span>
+        <span class="chip"><b>Kubernetes</b> deployment &amp; management</span>
+        <span class="chip"><b>Cluster monitoring</b> &amp; health checks</span>
+        <span class="chip"><b>GPU &amp; driver</b> management</span>
+        <span class="chip"><b>Multi-tenant</b> HPC + AI</span>
+      </div>
+      <div class="benefit"><b>DSX OS benefit:</b> Provisions and continuously manages the physical AI factory —
+      turning racks of GPU servers into a healthy, monitored, Kubernetes-ready cluster in hours instead of weeks.
+      Everything above (operators, Dynamo, Grove, NVCF) inherits a consistent, observable foundation.</div>
+    </section>
+
+  </div>
+
+  <div class="legend">
+    <span><span class="dot"></span> DSX OS layer</span>
+    <span>▲ data / request flow &amp; abstraction upward</span>
+    <span>Layers 1→5 provision → serve → consume</span>
+  </div>
+  </div><!-- /tab1 -->
+
+
+  <!-- ============ TAB 2 · BCM ============ -->
+  <div id="tab2" class="tabpanel">
+    <div class="hld">
+      <h2><span>BCM</span> — Base Command Manager · Blown Up</h2>
+      <p class="cap">Layer 1 · provisions the bare-metal GPU fleet and the Kubernetes cluster everything above runs on</p>
+      <svg viewBox="0 0 1080 540" role="img" aria-label="BCM internal architecture">
+        <!-- head node -->
+        <rect class="p-node-dsx" x="300" y="24" width="480" height="78" rx="11"/>
+        <text class="p-txt" x="540" y="54" text-anchor="middle" style="font-size:14px;font-weight:800;">BCM Head / Management Node</text>
+        <text class="p-desc" x="540" y="74" text-anchor="middle">CMDaemon · single control point · node image database</text>
+        <rect class="dsx-pill" x="686" y="32" width="80" height="17" rx="8"/>
+        <text class="dsx-pill-txt" x="726" y="44" text-anchor="middle">DSX · BCM</text>
+        <line class="p-flow" x1="540" y1="102" x2="540" y2="134"/>
+        <polygon class="ah" points="534,134 546,134 540,143"/>
+
+        <!-- capability row -->
+        <g>
+          <rect class="p-node" x="40"  y="150" width="188" height="92" rx="9"/>
+          <text class="p-txt" x="134" y="192" text-anchor="middle">Provisioning</text>
+          <text class="p-desc" x="134" y="210" text-anchor="middle">image-based · PXE · BIOS</text>
+
+          <rect class="p-node" x="243" y="150" width="188" height="92" rx="9"/>
+          <text class="p-txt" x="337" y="192" text-anchor="middle">Kubernetes</text>
+          <text class="p-desc" x="337" y="210" text-anchor="middle">deploy &amp; manage</text>
+
+          <rect class="p-node" x="446" y="150" width="188" height="92" rx="9"/>
+          <text class="p-txt" x="540" y="192" text-anchor="middle">Monitoring &amp; Health</text>
+          <text class="p-desc" x="540" y="210" text-anchor="middle">metrics · alerts · auto-heal</text>
+
+          <rect class="p-node" x="649" y="150" width="188" height="92" rx="9"/>
+          <text class="p-txt" x="743" y="192" text-anchor="middle">Workload Mgmt</text>
+          <text class="p-desc" x="743" y="210" text-anchor="middle">Slurm · K8s · users</text>
+
+          <rect class="p-node" x="852" y="150" width="188" height="92" rx="9"/>
+          <text class="p-txt" x="946" y="192" text-anchor="middle">HA &amp; Cloud Burst</text>
+          <text class="p-desc" x="946" y="210" text-anchor="middle">failover · burst to cloud</text>
+        </g>
+        <line class="p-flow" x1="540" y1="242" x2="540" y2="272"/>
+        <polygon class="ah" points="534,272 546,272 540,281"/>
+
+        <!-- provisioned cluster -->
+        <rect class="hld-band" x="40" y="280" width="1000" height="232" rx="14"/>
+        <text class="p-txt" x="60" y="308" style="fill:#a7e05a;font-weight:800;">Provisioned Cluster — GPU Compute Nodes (Kubernetes-ready)</text>
+        <g>
+          <rect class="p-node" x="60"  y="332" width="220" height="152" rx="9"/>
+          <rect class="p-node" x="300" y="332" width="220" height="152" rx="9"/>
+          <rect class="p-node" x="540" y="332" width="220" height="152" rx="9"/>
+          <rect class="p-node" x="780" y="332" width="220" height="152" rx="9"/>
+          <text class="p-txt"  x="170" y="372" text-anchor="middle">GPU Node 1</text>
+          <text class="p-txt"  x="410" y="372" text-anchor="middle">GPU Node 2</text>
+          <text class="p-txt"  x="650" y="372" text-anchor="middle">GPU Node 3</text>
+          <text class="p-txt"  x="890" y="372" text-anchor="middle">GPU Node N</text>
+          <text class="p-desc" x="170" y="418" text-anchor="middle">OS image · GPU-ready</text>
+          <text class="p-desc" x="410" y="418" text-anchor="middle">OS image · GPU-ready</text>
+          <text class="p-desc" x="650" y="418" text-anchor="middle">OS image · GPU-ready</text>
+          <text class="p-desc" x="890" y="418" text-anchor="middle">OS image · GPU-ready</text>
+          <text class="p-desc" x="170" y="446" text-anchor="middle">kubelet · runtime</text>
+          <text class="p-desc" x="410" y="446" text-anchor="middle">kubelet · runtime</text>
+          <text class="p-desc" x="650" y="446" text-anchor="middle">kubelet · runtime</text>
+          <text class="p-desc" x="890" y="446" text-anchor="middle">kubelet · runtime</text>
+        </g>
+      </svg>
+    </div>
+    <div class="grid2 det-wrap">
+      <div class="feature"><b>Image-based provisioning</b>Golden OS images pushed via PXE — every node comes up identical and reproducible.</div>
+      <div class="feature"><b>Kubernetes lifecycle</b>Stands up and manages the K8s cluster that the operators, Dynamo, Grove and NVCF all run on.</div>
+      <div class="feature"><b>Monitoring &amp; auto-heal</b>Fleet-wide metrics, health checks and alerting from a single pane of glass.</div>
+      <div class="feature"><b>Mixed HPC + AI</b>Slurm and Kubernetes side by side, multi-tenant, with HA head nodes and cloud bursting.</div>
+    </div>
+    <div class="benefit" style="max-width:960px;margin:16px auto 0;"><b>DSX OS benefit:</b> Turns racks of GPU servers into a healthy, monitored, Kubernetes-ready cluster in hours instead of weeks — the reproducible foundation every higher layer inherits.</div>
+  </div><!-- /tab2 -->
+
+  <!-- ============ TAB 3 · OPERATORS ============ -->
+  <div id="tab3" class="tabpanel">
+    <div class="hld">
+      <h2><span>GPU + Network Operator</span> — Blown Up</h2>
+      <p class="cap">Layer 2 · Kubernetes operators that make GPUs and the RDMA fabric self-managing on every node</p>
+      <svg viewBox="0 0 1080 640" role="img" aria-label="GPU and Network Operator internal architecture">
+        <!-- controllers -->
+        <rect class="p-node-dsx" x="120" y="20" width="380" height="70" rx="10"/>
+        <text class="p-txt" x="310" y="50" text-anchor="middle" style="font-weight:800;">GPU Operator (controller)</text>
+        <text class="p-desc" x="310" y="70" text-anchor="middle">reconciles the NVIDIA GPU software stack</text>
+
+        <rect class="p-node-dsx" x="580" y="20" width="380" height="70" rx="10"/>
+        <text class="p-txt" x="770" y="50" text-anchor="middle" style="font-weight:800;">Network Operator (controller)</text>
+        <text class="p-desc" x="770" y="70" text-anchor="middle">reconciles the accelerated networking stack</text>
+
+        <line class="p-flow" x1="310" y1="90" x2="310" y2="148" stroke-dasharray="5 5"/>
+        <polygon class="ah" points="304,148 316,148 310,157"/>
+        <line class="p-flow" x1="770" y1="90" x2="770" y2="148" stroke-dasharray="5 5"/>
+        <polygon class="ah" points="764,148 776,148 770,157"/>
+
+        <!-- worker node -->
+        <rect class="hld-band" x="50" y="152" width="980" height="440" rx="14"/>
+        <text class="p-txt" x="70" y="180" style="fill:#a7e05a;font-weight:800;">Kubernetes GPU Worker Node — DaemonSet pods managed by the operators</text>
+        <text class="hld-label" x="70" y="208">GPU Operator ▸</text>
+        <text class="hld-label" x="560" y="208">Network Operator ▸</text>
+
+        <!-- gpu operator pods -->
+        <g>
+          <rect class="p-node" x="70" y="216" width="410" height="38" rx="7"/><text class="p-txt" x="275" y="240" text-anchor="middle">NVIDIA Driver</text>
+          <rect class="p-node" x="70" y="262" width="410" height="38" rx="7"/><text class="p-txt" x="275" y="286" text-anchor="middle">NVIDIA Container Toolkit</text>
+          <rect class="p-node" x="70" y="308" width="410" height="38" rx="7"/><text class="p-txt" x="275" y="332" text-anchor="middle">Kubernetes Device Plugin</text>
+          <rect class="p-node" x="70" y="354" width="410" height="38" rx="7"/><text class="p-txt" x="275" y="378" text-anchor="middle">DCGM Exporter (telemetry)</text>
+          <rect class="p-node" x="70" y="400" width="410" height="38" rx="7"/><text class="p-txt" x="275" y="424" text-anchor="middle">MIG Manager</text>
+          <rect class="p-node" x="70" y="446" width="410" height="38" rx="7"/><text class="p-txt" x="275" y="470" text-anchor="middle">Node Feature Discovery / GFD</text>
+        </g>
+        <!-- network operator pods -->
+        <g>
+          <rect class="p-node" x="560" y="216" width="410" height="38" rx="7"/><text class="p-txt" x="765" y="240" text-anchor="middle">MOFED / DOCA Driver</text>
+          <rect class="p-node" x="560" y="262" width="410" height="38" rx="7"/><text class="p-txt" x="765" y="286" text-anchor="middle">RDMA Shared Device Plugin</text>
+          <rect class="p-node" x="560" y="308" width="410" height="38" rx="7"/><text class="p-txt" x="765" y="332" text-anchor="middle">GPUDirect RDMA (nv-peermem)</text>
+          <rect class="p-node" x="560" y="354" width="410" height="38" rx="7"/><text class="p-txt" x="765" y="378" text-anchor="middle">SR-IOV CNI + Multus</text>
+          <rect class="p-node" x="560" y="400" width="410" height="38" rx="7"/><text class="p-txt" x="765" y="424" text-anchor="middle">NIC Feature Discovery</text>
+          <rect class="p-node" x="560" y="446" width="410" height="38" rx="7"/><text class="p-txt" x="765" y="470" text-anchor="middle">IPAM / secondary networks</text>
+        </g>
+        <!-- hardware exposed -->
+        <rect class="p-node-dsx" x="70" y="502" width="410" height="72" rx="9"/>
+        <text class="p-txt" x="275" y="534" text-anchor="middle">NVIDIA GPUs</text>
+        <text class="p-desc" x="275" y="554" text-anchor="middle">MIG partitions · DCGM metrics</text>
+        <rect class="p-node-dsx" x="560" y="502" width="410" height="72" rx="9"/>
+        <text class="p-txt" x="765" y="534" text-anchor="middle">ConnectX / BlueField NIC</text>
+        <text class="p-desc" x="765" y="554" text-anchor="middle">RoCE / InfiniBand · GPUDirect path</text>
+      </svg>
+    </div>
+    <div class="grid2 det-wrap">
+      <div class="feature"><b>Zero manual driver ops</b>Drivers, toolkit, device plugin and MIG rolled out and version-matched by the operator, not by hand.</div>
+      <div class="feature"><b>Accelerated fabric</b>RDMA/RoCE, SR-IOV and GPUDirect give Dynamo's disaggregated KV transfers a low-latency path.</div>
+      <div class="feature"><b>Observability built in</b>DCGM exporter surfaces per-GPU telemetry to the whole stack (and back up to BCM &amp; NVCF).</div>
+      <div class="feature"><b>Consistent nodes</b>Every node exposes GPUs + high-speed NICs identically, so schedulers can place workloads safely.</div>
+    </div>
+    <div class="benefit" style="max-width:960px;margin:16px auto 0;"><b>DSX OS benefit:</b> Removes driver/fabric toil and guarantees uniform accelerated hardware — the fabric that makes multi-node, disaggregated inference fast and reliable.</div>
+  </div><!-- /tab3 -->
+
+  <!-- ============ TAB 4 · DYNAMO ============ -->
+  <div id="tab4" class="tabpanel">
+    <div class="hld">
+      <h2><span>NVIDIA Dynamo</span> — Distributed Inference Engine · Blown Up</h2>
+      <p class="cap">Layer 3 · PD-disaggregated serving with cache-aware routing across TensorRT-LLM · vLLM · SGLang</p>
+      <svg viewBox="0 0 1120 560" role="img" aria-label="Dynamo internal request flow">
+        <!-- backends header -->
+        <text class="hld-label" x="560" y="42" text-anchor="end">BACKENDS ▸</text>
+        <rect class="hld-node-bk" x="575" y="26" width="150" height="30" rx="7"/><text class="p-txt" x="650" y="46" text-anchor="middle">TensorRT-LLM</text>
+        <rect class="hld-node-bk" x="735" y="26" width="150" height="30" rx="7"/><text class="p-txt" x="810" y="46" text-anchor="middle">vLLM</text>
+        <rect class="hld-node-bk" x="895" y="26" width="150" height="30" rx="7"/><text class="p-txt" x="970" y="46" text-anchor="middle">SGLang</text>
+
+        <!-- client -->
+        <rect class="p-actor" x="20" y="232" width="112" height="66" rx="10"/>
+        <text class="p-txt" x="76" y="262" text-anchor="middle">Client</text>
+        <text class="p-desc" x="76" y="282" text-anchor="middle">OpenAI API</text>
+        <line class="p-flow" x1="132" y1="258" x2="156" y2="258"/><polygon class="ah" points="156,252 156,264 165,258"/>
+
+        <!-- frontend -->
+        <rect class="p-node" x="168" y="222" width="150" height="86" rx="9"/>
+        <text class="p-txt" x="243" y="256" text-anchor="middle">Frontend</text>
+        <text class="p-desc" x="243" y="276" text-anchor="middle">API · pre / post</text>
+        <line class="p-flow" x1="318" y1="258" x2="340" y2="258"/><polygon class="ah" points="340,252 340,264 349,258"/>
+
+        <!-- smart router -->
+        <rect class="p-node-dsx" x="352" y="204" width="190" height="122" rx="10"/>
+        <text class="p-txt" x="447" y="238" text-anchor="middle" style="font-weight:800;">KV-Aware Smart Router</text>
+        <text class="p-desc" x="447" y="258" text-anchor="middle">cache-aware routing</text>
+        <text class="p-desc" x="447" y="274" text-anchor="middle">~2× faster TTFT</text>
+        <rect class="dsx-pill" x="401" y="296" width="92" height="17" rx="8"/>
+        <text class="dsx-pill-txt" x="447" y="308" text-anchor="middle">DSX · Dynamo</text>
+
+        <!-- router -> prefill / decode -->
+        <line class="p-flow" x1="542" y1="235" x2="573" y2="180"/><polygon class="ah" points="568,178 578,172 574,184"/>
+        <line class="p-flow" x1="542" y1="295" x2="573" y2="378"/><polygon class="ah" points="568,382 578,376 574,388"/>
+
+        <!-- prefill -->
+        <rect class="p-node" x="576" y="120" width="224" height="112" rx="9"/>
+        <text class="p-txt" x="688" y="156" text-anchor="middle">Prefill Workers</text>
+        <text class="p-desc" x="688" y="178" text-anchor="middle">compute-bound phase</text>
+        <text class="p-desc" x="688" y="196" text-anchor="middle">scaled on its own economics</text>
+        <!-- decode -->
+        <rect class="p-node" x="576" y="326" width="224" height="112" rx="9"/>
+        <text class="p-txt" x="688" y="362" text-anchor="middle">Decode Workers</text>
+        <text class="p-desc" x="688" y="384" text-anchor="middle">memory-bound phase</text>
+        <text class="p-desc" x="688" y="402" text-anchor="middle">independently scaled</text>
+
+        <!-- NIXL transfer -->
+        <line class="p-flow" x1="688" y1="232" x2="688" y2="322" stroke-dasharray="6 4"/>
+        <polygon class="ah" points="682,322 694,322 688,331"/>
+        <text class="p-flow-lbl" x="700" y="282" text-anchor="start">KV transfer</text>
+        <text class="p-flow-lbl" x="700" y="296" text-anchor="start">(NIXL)</text>
+
+        <!-- KVBM -->
+        <rect class="p-node" x="840" y="120" width="160" height="112" rx="9"/>
+        <text class="p-txt" x="920" y="156" text-anchor="middle">KV Block Mgr</text>
+        <text class="p-desc" x="920" y="178" text-anchor="middle">GPU→CPU→SSD</text>
+        <text class="p-desc" x="920" y="196" text-anchor="middle">cache reuse</text>
+        <line class="p-flow" x1="800" y1="176" x2="838" y2="176" stroke-dasharray="4 4"/>
+        <!-- Planner -->
+        <rect class="p-node" x="840" y="326" width="160" height="112" rx="9"/>
+        <text class="p-txt" x="920" y="362" text-anchor="middle">SLA Planner</text>
+        <text class="p-desc" x="920" y="384" text-anchor="middle">autoscale pools</text>
+        <text class="p-desc" x="920" y="402" text-anchor="middle">SLO-driven · TCO</text>
+        <line class="p-flow" x1="800" y1="382" x2="838" y2="382" stroke-dasharray="4 4"/>
+
+        <!-- return path -->
+        <polyline class="p-flow" points="688,438 688,505 76,505 76,300"/>
+        <polygon class="ah" points="70,306 82,306 76,297"/>
+        <text class="p-flow-lbl" x="380" y="499" text-anchor="middle">response stream ◂ back to client</text>
+      </svg>
+    </div>
+    <div class="grid2 det-wrap">
+      <div class="feature"><b>PD Disaggregation</b>Prefill and Decode run on separate GPU pools, each tuned to its compute-vs-memory profile and scaled independently.</div>
+      <div class="feature"><b>Cache-Aware Routing</b>Requests go to the worker that already holds the matching KV cache — up to ~2× faster time-to-first-token.</div>
+      <div class="feature"><b>KVBM + NIXL</b>Tiered KV cache (GPU→CPU→SSD) plus low-latency GPU-to-GPU KV transfer between phases.</div>
+      <div class="feature"><b>Three backends, one API</b>Same disaggregated architecture over TensorRT-LLM, vLLM and SGLang — swap engines without re-architecting.</div>
+    </div>
+    <div class="benefit" style="max-width:960px;margin:16px auto 0;"><b>DSX OS benefit:</b> Decouples the two phases of LLM inference and reuses KV cache instead of recomputing it — the core efficiency win: far higher tokens/sec/GPU at lower latency.</div>
+  </div><!-- /tab4 -->
+
+  <!-- ============ TAB 5 · GROVE ============ -->
+  <div id="tab5" class="tabpanel">
+    <div class="hld">
+      <h2><span>Grove</span> — Multi-Node Inference Orchestration · Blown Up</h2>
+      <p class="cap">Layer 4 · models a disaggregated Dynamo deployment as one gang-scheduled, hierarchical unit</p>
+      <svg viewBox="0 0 1080 600" role="img" aria-label="Grove hierarchy and scheduling">
+        <!-- PodCliqueSet -->
+        <rect class="p-node-dsx" x="400" y="24" width="280" height="66" rx="10"/>
+        <text class="p-txt" x="540" y="52" text-anchor="middle" style="font-weight:800;">PodCliqueSet</text>
+        <text class="p-desc" x="540" y="72" text-anchor="middle">top-level · replica autoscale</text>
+        <rect class="dsx-pill" x="596" y="30" width="78" height="16" rx="8"/>
+        <text class="dsx-pill-txt" x="635" y="42" text-anchor="middle">DSX · Grove</text>
+        <line class="p-flow" x1="540" y1="90" x2="540" y2="126"/><polygon class="ah" points="534,126 546,126 540,135"/>
+
+        <!-- PodCliqueScalingGroup -->
+        <rect class="p-node" x="360" y="134" width="360" height="60" rx="9"/>
+        <text class="p-txt" x="540" y="162" text-anchor="middle">PodCliqueScalingGroup</text>
+        <text class="p-desc" x="540" y="181" text-anchor="middle">scale &amp; schedule together (gang unit)</text>
+
+        <!-- fan out to cliques -->
+        <line class="p-flow" x1="540" y1="194" x2="210" y2="224"/><polygon class="ah" points="206,218 218,220 210,230"/>
+        <line class="p-flow" x1="540" y1="194" x2="540" y2="224"/><polygon class="ah" points="534,224 546,224 540,233"/>
+        <line class="p-flow" x1="540" y1="194" x2="870" y2="224"/><polygon class="ah" points="862,220 874,218 870,230"/>
+
+        <!-- PodCliques -->
+        <rect class="p-node" x="70"  y="230" width="280" height="78" rx="9"/>
+        <text class="p-txt" x="210" y="262" text-anchor="middle">PodClique · Frontend</text>
+        <text class="p-desc" x="210" y="284" text-anchor="middle">router / API pods</text>
+        <rect class="p-node" x="400" y="230" width="280" height="78" rx="9"/>
+        <text class="p-txt" x="540" y="262" text-anchor="middle">PodClique · Prefill</text>
+        <text class="p-desc" x="540" y="284" text-anchor="middle">prefill worker pods</text>
+        <rect class="p-node" x="730" y="230" width="280" height="78" rx="9"/>
+        <text class="p-txt" x="870" y="262" text-anchor="middle">PodClique · Decode</text>
+        <text class="p-desc" x="870" y="284" text-anchor="middle">decode worker pods</text>
+
+        <!-- pods under each clique -->
+        <g>
+          <rect class="hld-node-bk" x="86"  y="330" width="80" height="34" rx="6"/><rect class="hld-node-bk" x="176" y="330" width="80" height="34" rx="6"/><rect class="hld-node-bk" x="266" y="330" width="64" height="34" rx="6"/>
+          <rect class="hld-node-bk" x="416" y="330" width="80" height="34" rx="6"/><rect class="hld-node-bk" x="506" y="330" width="80" height="34" rx="6"/><rect class="hld-node-bk" x="596" y="330" width="64" height="34" rx="6"/>
+          <rect class="hld-node-bk" x="746" y="330" width="80" height="34" rx="6"/><rect class="hld-node-bk" x="836" y="330" width="80" height="34" rx="6"/><rect class="hld-node-bk" x="926" y="330" width="64" height="34" rx="6"/>
+          <text class="p-desc" x="210" y="351" text-anchor="middle" style="font-size:9px;">pod · pod · pod</text>
+          <text class="p-desc" x="540" y="351" text-anchor="middle" style="font-size:9px;">pod · pod · pod</text>
+          <text class="p-desc" x="870" y="351" text-anchor="middle" style="font-size:9px;">pod · pod · pod</text>
+        </g>
+
+        <!-- into scheduler -->
+        <line class="p-flow" x1="210" y1="364" x2="210" y2="436"/><polygon class="ah" points="204,436 216,436 210,445"/>
+        <line class="p-flow" x1="540" y1="364" x2="540" y2="436"/><polygon class="ah" points="534,436 546,436 540,445"/>
+        <line class="p-flow" x1="870" y1="364" x2="870" y2="436"/><polygon class="ah" points="864,436 876,436 870,445"/>
+
+        <!-- PodGang / scheduler -->
+        <rect class="p-node-dsx" x="40" y="444" width="1000" height="96" rx="12"/>
+        <text class="p-txt" x="540" y="478" text-anchor="middle" style="font-weight:800;">PodGang → KAI Scheduler</text>
+        <text class="p-desc" x="540" y="502" text-anchor="middle">gang scheduling (all-or-nothing) · topology-aware (NVLink / rail) · min-replica guarantee · startup ordering</text>
+        <rect class="dsx-pill" x="494" y="512" width="92" height="17" rx="8"/>
+        <text class="dsx-pill-txt" x="540" y="524" text-anchor="middle">DSX · Grove</text>
+      </svg>
+    </div>
+    <div class="grid2 det-wrap">
+      <div class="feature"><b>Hierarchical CRDs</b>PodCliqueSet → PodCliqueScalingGroup → PodClique map a whole disaggregated system to Kubernetes objects.</div>
+      <div class="feature"><b>Gang scheduling</b>All-or-nothing startup via PodGang prevents half-scheduled deployments and GPU deadlock.</div>
+      <div class="feature"><b>Topology-aware</b>Co-locates tightly-coupled cliques inside NVLink / rail domains for the fastest interconnect.</div>
+      <div class="feature"><b>Multi-level autoscale</b>Scales roles (frontend / prefill / decode) independently while honoring gang constraints.</div>
+    </div>
+    <div class="benefit" style="max-width:960px;margin:16px auto 0;"><b>DSX OS benefit:</b> Makes disaggregated, multi-node inference deployable and reliable at tens-of-thousands-of-GPU scale — no wasted GPUs, KV transfers kept on the fastest links.</div>
+  </div><!-- /tab5 -->
+
+  <div id="tab6" class="tabpanel">
+    <h2 style="text-align:center;margin:6px 0 2px;font-size:1.5rem;">NVCF Serving Planes — <span style="color:var(--nv-green)">Blown Up</span></h2>
+    <p class="intro-t2">Zoom into the three NVCF planes — <b style="color:#9bb6f0">Control</b>,
+      <b style="color:#e6bd6e">Invocation</b>, and <b style="color:#a7e05a">Data / Compute</b> —
+      and see exactly where each <b style="color:var(--nv-green)">DSX&#160;OS</b> component
+      (BCM · GPU/Network Operator · Dynamo · Grove · NVCF) plugs in. Green-outlined boxes with a
+      <b style="color:var(--nv-green)">DSX</b> pill are DSX OS integration points.</p>
+
+    <svg viewBox="0 0 1120 1020" role="img" aria-label="NVCF control, invocation and data planes with DSX OS integration points">
+      <defs>
+        <linearGradient id="dataGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="rgba(118,185,0,0.10)"/>
+          <stop offset="100%" stop-color="rgba(118,185,0,0.03)"/>
+        </linearGradient>
+      </defs>
+
+      <!-- ===== actors ===== -->
+      <rect class="p-actor" x="150" y="20" width="330" height="48" rx="10"/>
+      <text class="p-txt" x="315" y="42" text-anchor="middle">Developers / CI</text>
+      <text class="p-desc" x="315" y="58" text-anchor="middle">create · deploy · version functions</text>
+
+      <rect class="p-actor" x="640" y="20" width="330" height="48" rx="10"/>
+      <text class="p-txt" x="805" y="42" text-anchor="middle">End Users / Applications</text>
+      <text class="p-desc" x="805" y="58" text-anchor="middle">HTTP · gRPC · streaming inference calls</text>
+
+      <!-- actor flows -->
+      <path class="p-flow" d="M315,68 L315,96" marker-end="url(#fa)"/>
+      <path class="p-flow" d="M805,68 L805,262" marker-end="url(#fa)"/>
+      <marker id="fa" markerWidth="12" markerHeight="12" refX="6" refY="7" orient="auto">
+        <path d="M2,2 L6,9 L10,2 Z" fill="#76b900"/>
+      </marker>
+
+      <!-- ================= CONTROL PLANE ================= -->
+      <g>
+        <rect class="plane-band plane-ctrl" x="40" y="96" width="1040" height="150" rx="16"/>
+        <text class="p-title p-ctrl-t" x="64" y="126">CONTROL PLANE</text>
+        <text class="p-sub" x="230" y="126">management hub · authoritative state · K8s services</text>
+        <g>
+          <rect class="p-node-dsx" x="64" y="146" width="228" height="82" rx="9"/>
+          <text class="p-txt" x="178" y="176" text-anchor="middle">NVCF API</text>
+          <text class="p-desc" x="178" y="194" text-anchor="middle">function / deployment CRUD</text>
+          <rect class="dsx-pill" x="132" y="204" width="92" height="17" rx="8"/>
+          <text class="dsx-pill-txt" x="178" y="216" text-anchor="middle">DSX · NVCF</text>
+
+          <rect class="p-node" x="308" y="146" width="228" height="82" rx="9"/>
+          <text class="p-txt" x="422" y="176" text-anchor="middle">Function &amp; Deploy State</text>
+          <text class="p-desc" x="422" y="196" text-anchor="middle">authoritative store · versions</text>
+
+          <rect class="p-node" x="552" y="146" width="228" height="82" rx="9"/>
+          <text class="p-txt" x="666" y="176" text-anchor="middle">Secret Management</text>
+          <text class="p-desc" x="666" y="196" text-anchor="middle">creds · image pull · tokens</text>
+
+          <rect class="p-node" x="796" y="146" width="260" height="82" rx="9"/>
+          <text class="p-txt" x="926" y="176" text-anchor="middle">Platform Operations</text>
+          <text class="p-desc" x="926" y="196" text-anchor="middle">scheduling · observability · TCO</text>
+        </g>
+      </g>
+
+      <!-- ================= INVOCATION PLANE ================= -->
+      <g>
+        <rect class="plane-band plane-inv" x="40" y="262" width="1040" height="150" rx="16"/>
+        <text class="p-title p-inv-t" x="64" y="292">INVOCATION PLANE</text>
+        <text class="p-sub" x="290" y="292">receives requests · routing · rate limiting → running workloads</text>
+        <g>
+          <rect class="p-node" x="64" y="312" width="228" height="82" rx="9"/>
+          <text class="p-txt" x="178" y="342" text-anchor="middle">Ingress</text>
+          <text class="p-desc" x="178" y="362" text-anchor="middle">HTTP · gRPC · streaming</text>
+
+          <rect class="p-node" x="308" y="312" width="228" height="82" rx="9"/>
+          <text class="p-txt" x="422" y="342" text-anchor="middle">gRPC Proxy</text>
+          <text class="p-desc" x="422" y="362" text-anchor="middle">protocol bridge</text>
+
+          <rect class="p-node-dsx" x="552" y="312" width="228" height="82" rx="9"/>
+          <text class="p-txt" x="666" y="340" text-anchor="middle">Router + Rate Limiter</text>
+          <text class="p-desc" x="666" y="358" text-anchor="middle">+ Dynamo cache-aware routing</text>
+          <rect class="dsx-pill" x="600" y="368" width="132" height="17" rx="8"/>
+          <text class="dsx-pill-txt" x="666" y="380" text-anchor="middle">DSX · NVCF + Dynamo</text>
+
+          <rect class="p-node" x="796" y="312" width="260" height="82" rx="9"/>
+          <text class="p-txt" x="926" y="342" text-anchor="middle">LLM Gateway</text>
+          <text class="p-desc" x="926" y="362" text-anchor="middle">OpenAI-compatible paths</text>
+        </g>
+      </g>
+
+      <!-- flow invocation -> data -->
+      <path class="p-flow" d="M560,412 L560,470" marker-end="url(#fa)"/>
+      <text class="p-flow-lbl" x="574" y="446" text-anchor="start">invoke</text>
+      <path class="p-flow" d="M600,470 L600,412" marker-end="url(#fa)"/>
+      <text class="p-flow-lbl" x="614" y="446" text-anchor="start">stream back</text>
+
+      <!-- ================= NATS BUS ================= -->
+      <g>
+        <rect class="plane-band plane-bus" x="40" y="428" width="1040" height="42" rx="12"/>
+        <text class="p-title p-bus-t" x="64" y="454" style="font-size:13px;">NATS MESSAGING BUS</text>
+        <text class="p-sub" x="300" y="454">control ⇄ compute · work queue · pod-lifecycle events · NVCA subscribes</text>
+      </g>
+      <!-- control<->nats and nats<->data vertical connectors on left -->
+      <path class="p-flow" d="M178,228 L178,428" stroke-dasharray="5 5" marker-end="url(#fa)"/>
+      <text class="p-flow-lbl" x="188" y="330" text-anchor="start">deploy events</text>
+
+      <!-- ================= DATA / COMPUTE PLANE ================= -->
+      <g>
+        <rect class="plane-band plane-data" x="40" y="470" width="1040" height="520" rx="16" fill="url(#dataGrad)"/>
+        <text class="p-title p-data-t" x="64" y="500">DATA / COMPUTE PLANE</text>
+        <text class="p-sub" x="330" y="500">GPU clusters · one NVCA per cluster · where inference actually runs</text>
+
+        <!-- agent/services row -->
+        <g>
+          <rect class="p-node-dsx" x="64" y="516" width="238" height="76" rx="9"/>
+          <text class="p-txt" x="183" y="544" text-anchor="middle">NVCA — Cluster Agent</text>
+          <text class="p-desc" x="183" y="562" text-anchor="middle">registers cluster · pod lifecycle</text>
+          <rect class="dsx-pill" x="137" y="570" width="92" height="17" rx="8"/>
+          <text class="dsx-pill-txt" x="183" y="582" text-anchor="middle">DSX · NVCF</text>
+
+          <rect class="p-node" x="318" y="516" width="230" height="76" rx="9"/>
+          <text class="p-txt" x="433" y="550" text-anchor="middle">Cache Service</text>
+          <text class="p-desc" x="433" y="568" text-anchor="middle">artifact / image cache</text>
+
+          <rect class="p-node" x="564" y="516" width="230" height="76" rx="9"/>
+          <text class="p-txt" x="679" y="550" text-anchor="middle">ESS Agent</text>
+          <text class="p-desc" x="679" y="568" text-anchor="middle">image creds · secrets sync</text>
+
+          <rect class="p-node" x="810" y="516" width="246" height="76" rx="9"/>
+          <text class="p-txt" x="933" y="550" text-anchor="middle">Telemetry</text>
+          <text class="p-desc" x="933" y="568" text-anchor="middle">metrics · logs · DCGM</text>
+        </g>
+
+        <!-- GROVE wrapper around the GPU function workload -->
+        <rect x="64" y="612" width="992" height="212" rx="12" fill="rgba(118,185,0,0.05)" stroke="#76b900" stroke-width="1.5" stroke-dasharray="7 5"/>
+        <text class="p-txt" x="80" y="634" style="fill:#a7e05a;font-weight:800;">Grove — orchestrates the workload (gang scheduling · topology-aware · PodGang)</text>
+        <rect class="dsx-pill" x="820" y="620" width="88" height="18" rx="9"/>
+        <text class="dsx-pill-txt" x="864" y="633" text-anchor="middle">DSX · Grove</text>
+
+        <!-- DYNAMO gpu function -->
+        <rect class="p-node-dsx" x="86" y="648" width="948" height="150" rx="11" style="fill:#16210b;"/>
+        <text class="p-txt" x="106" y="674" style="fill:#a7e05a;font-weight:800;">GPU Function = NVIDIA Dynamo — TensorRT-LLM · vLLM · SGLang</text>
+        <rect class="dsx-pill" x="812" y="660" width="98" height="18" rx="9"/>
+        <text class="dsx-pill-txt" x="861" y="673" text-anchor="middle">DSX · Dynamo</text>
+
+        <g>
+          <rect class="p-node" x="106" y="688" width="212" height="94" rx="9"/>
+          <text class="p-txt" x="212" y="720" text-anchor="middle">Prefill Pool</text>
+          <text class="p-desc" x="212" y="738" text-anchor="middle">compute-bound</text>
+          <text class="p-desc" x="212" y="752" text-anchor="middle">PD disaggregation</text>
+
+          <rect class="p-node" x="334" y="688" width="212" height="94" rx="9"/>
+          <text class="p-txt" x="440" y="720" text-anchor="middle">Decode Pool</text>
+          <text class="p-desc" x="440" y="738" text-anchor="middle">memory-bound</text>
+          <text class="p-desc" x="440" y="752" text-anchor="middle">scaled independently</text>
+
+          <rect class="p-node" x="562" y="688" width="212" height="94" rx="9"/>
+          <text class="p-txt" x="668" y="720" text-anchor="middle">KV Block Manager</text>
+          <text class="p-desc" x="668" y="738" text-anchor="middle">GPU→CPU→SSD tier</text>
+          <text class="p-desc" x="668" y="752" text-anchor="middle">cache-aware reuse</text>
+
+          <rect class="p-node" x="790" y="688" width="222" height="94" rx="9"/>
+          <text class="p-txt" x="901" y="720" text-anchor="middle">SLA Planner + NIXL</text>
+          <text class="p-desc" x="901" y="738" text-anchor="middle">autoscale prefill/decode</text>
+          <text class="p-desc" x="901" y="752" text-anchor="middle">fast GPU-GPU transfer</text>
+        </g>
+
+        <!-- hardware enablement strip -->
+        <rect class="p-node-dsx" x="64" y="838" width="596" height="60" rx="9"/>
+        <text class="p-txt" x="362" y="864" text-anchor="middle">GPU Operator + Network Operator</text>
+        <text class="p-desc" x="362" y="882" text-anchor="middle">drivers · MIG · DCGM · RDMA/RoCE · GPUDirect · SR-IOV</text>
+        <rect class="dsx-pill" x="546" y="844" width="100" height="17" rx="8"/>
+        <text class="dsx-pill-txt" x="596" y="856" text-anchor="middle">DSX · Operators</text>
+
+        <rect class="p-node-dsx" x="676" y="838" width="380" height="60" rx="9"/>
+        <text class="p-txt" x="866" y="864" text-anchor="middle">BCM — Base Command Manager</text>
+        <text class="p-desc" x="866" y="882" text-anchor="middle">provisions GPU nodes + this Kubernetes cluster</text>
+        <rect class="dsx-pill" x="972" y="844" width="72" height="17" rx="8"/>
+        <text class="dsx-pill-txt" x="1008" y="856" text-anchor="middle">DSX · BCM</text>
+
+        <!-- foundation label -->
+        <rect x="64" y="912" width="992" height="60" rx="9" fill="rgba(118,185,0,0.04)" stroke="#2a3320"/>
+        <text class="p-desc" x="560" y="938" text-anchor="middle" style="font-size:11.5px;">Bottom-up: BCM provisions the cluster → Operators enable GPUs &amp; fabric → Dynamo serves inference → Grove orchestrates it → NVCA/NVCF expose it as a serverless function</text>
+        <text class="p-desc" x="560" y="956" text-anchor="middle" style="fill:#a7e05a;">This entire plane is the physical AI factory built by the Tab&#160;1 layered stack.</text>
+      </g>
+    </svg>
+
+    <table class="maptable">
+      <thead>
+        <tr><th>DSX OS component</th><th>Integrates in</th><th>Role at this plane</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><b>BCM</b></td><td class="pl pl-data">Data / Compute</td><td>Provisions the bare-metal GPU nodes and the Kubernetes cluster that the compute plane (NVCA + workloads) runs on.</td></tr>
+        <tr><td><b>GPU + Network Operator</b></td><td class="pl pl-data">Data / Compute</td><td>Make GPUs and RDMA/RoCE fabric first-class K8s resources so function pods can use accelerators and GPUDirect transfers.</td></tr>
+        <tr><td><b>NVIDIA Dynamo</b></td><td class="pl pl-data">Data / Compute</td><td>The GPU function workload itself — PD-disaggregated prefill/decode, KVBM, planner — across TensorRT-LLM / vLLM / SGLang. Its cache-aware router also informs the <span class="pl-inv">invocation</span> plane.</td></tr>
+        <tr><td><b>Grove</b></td><td class="pl pl-data">Data / Compute</td><td>Gang-schedules and topology-places the multi-node Dynamo pods; NVCA drives their lifecycle via NATS events.</td></tr>
+        <tr><td><b>NVCF</b></td><td class="pl pl-ctrl">Control</td> <td>The platform itself — spans all three planes: API &amp; state (<span class="pl-ctrl">control</span>), routing/gateway (<span class="pl-inv">invocation</span>), and NVCA cluster agent (<span class="pl-data">data</span>).</td></tr>
+      </tbody>
+    </table>
+  </div><!-- /tab6 -->
+</main>
+
+<footer>
+  <p>NVIDIA DSX OS Inference Reference Architecture · illustrative overview.
+  Sources:
+  <a href="https://docs.nvidia.com/dsx">DSX Docs</a> ·
+  <a href="https://support.brightcomputing.com/manuals/9.2/user-manual.pdf">BCM 9.2 Manual</a> ·
+  <a href="https://github.com/NVIDIA/gpu-operator">GPU Operator</a> ·
+  <a href="https://github.com/Mellanox/network-operator">Network Operator</a> ·
+  <a href="https://github.com/ai-dynamo/dynamo">Dynamo</a> ·
+  <a href="https://github.com/ai-dynamo/grove">Grove</a> ·
+  <a href="https://github.com/NVIDIA/nvcf">NVCF</a></p>
+</footer>
+<script>
+  function showTab(n) {
+    document.querySelectorAll('.tabpanel').forEach(function (p) { p.classList.remove('active'); });
+    document.querySelectorAll('.tabbtn').forEach(function (b) { b.classList.remove('active'); });
+    document.getElementById('tab' + n).classList.add('active');
+    document.getElementById('tabbtn' + n).classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+</script>
+</body>
+</html>

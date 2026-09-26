@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" width="1600" height="900" font-family="Helvetica, Arial, sans-serif" role="img" aria-label="From campus lab to AI factory">
+<defs><marker id="mdefault" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#52514e"/></marker><marker id="mdefaults" viewBox="0 0 10 10" refX="1" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#52514e"/></marker><marker id="mkv" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#eb6834"/></marker><marker id="mkvs" viewBox="0 0 10 10" refX="1" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#eb6834"/></marker><marker id="mdynamo" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#5f9400"/></marker><marker id="mdynamos" viewBox="0 0 10 10" refX="1" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#5f9400"/></marker><marker id="mclient" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#2a78d6"/></marker><marker id="mclients" viewBox="0 0 10 10" refX="1" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#2a78d6"/></marker></defs>
+<rect width="1600" height="900" fill="#fcfcfb"/>
+<text x="60" y="70.0" font-size="36" fill="#0b0b0b" font-weight="700" text-anchor="start">From campus lab to AI factory</text>
+<text x="60" y="108.0" font-size="20" fill="#52514e" font-weight="400" text-anchor="start">The serving layer is the same Dynamo; what students learn on idle Slurm nodes transfers to NVIDIA&#x27;s production stack</text>
+<text x="430" y="170.0" font-size="22" fill="#0d366b" font-weight="700" text-anchor="middle">Campus lab (this repository)</text>
+<text x="1170" y="170.0" font-size="22" fill="#233a00" font-weight="700" text-anchor="middle">NVIDIA AI factory (DSX OS)</text>
+<text x="60" y="262.0" font-size="18" fill="#0b0b0b" font-weight="700" text-anchor="start">5  Consume</text>
+<rect x="230" y="200" width="400" height="108" rx="10" fill="#f0efec" stroke="#8a8984" stroke-width="2"/>
+<text x="430.0" y="246.0" font-size="16" fill="#2e2d2a" font-weight="400" text-anchor="middle">LiteLLM gateway · Open WebUI</text>
+<text x="430.0" y="266.8" font-size="16" fill="#2e2d2a" font-weight="400" text-anchor="middle">per-course keys · quotas</text>
+<rect x="970" y="200" width="400" height="108" rx="10" fill="#f0efec" stroke="#8a8984" stroke-width="2"/>
+<text x="1170.0" y="246.0" font-size="16" fill="#2e2d2a" font-weight="400" text-anchor="middle">NVCF — NVIDIA Cloud Functions</text>
+<text x="1170.0" y="266.8" font-size="16" fill="#2e2d2a" font-weight="400" text-anchor="middle">serverless · scale-to-zero · multi-tenant</text>
+<path d="M630.0,254.0 L970.0,254.0" fill="none" stroke="#52514e" stroke-width="2" stroke-dasharray="8 6" marker-end="url(#mdefault)"/>
+<text x="800.0" y="244.0" font-size="14" fill="#52514e" font-weight="600" text-anchor="middle">scales up to</text>
+<text x="60" y="390.0" font-size="18" fill="#0b0b0b" font-weight="700" text-anchor="start">4  Orchestrate</text>
+<rect x="230" y="328" width="400" height="108" rx="10" fill="#f0efec" stroke="#8a8984" stroke-width="2"/>
+<text x="430.0" y="374.0" font-size="16" fill="#2e2d2a" font-weight="400" text-anchor="middle">serve.sbatch + serve.sh</text>
+<text x="430.0" y="394.8" font-size="16" fill="#2e2d2a" font-weight="400" text-anchor="middle">one node · preemptible · requeue</text>
+<rect x="970" y="328" width="400" height="108" rx="10" fill="#f0efec" stroke="#8a8984" stroke-width="2"/>
+<text x="1170.0" y="374.0" font-size="16" fill="#2e2d2a" font-weight="400" text-anchor="middle">Grove</text>
+<text x="1170.0" y="394.8" font-size="16" fill="#2e2d2a" font-weight="400" text-anchor="middle">gang + topology-aware multi-node scheduling</text>
+<path d="M630.0,382.0 L970.0,382.0" fill="none" stroke="#52514e" stroke-width="2" stroke-dasharray="8 6" marker-end="url(#mdefault)"/>
+<text x="800.0" y="372.0" font-size="14" fill="#52514e" font-weight="600" text-anchor="middle">scales up to</text>
+<text x="60" y="518.0" font-size="18" fill="#0b0b0b" font-weight="700" text-anchor="start">3  Serve</text>
+<rect x="230" y="456" width="400" height="108" rx="10" fill="#76b900" stroke="#5f9400" stroke-width="2"/>
+<text x="430.0" y="502.0" font-size="16" fill="#ffffff" font-weight="400" text-anchor="middle">NVIDIA Dynamo 1.5 · KV router · NIXL</text>
+<text x="430.0" y="522.8" font-size="16" fill="#ffffff" font-weight="400" text-anchor="middle">vLLM engine · agg or disagg</text>
+<rect x="970" y="456" width="400" height="108" rx="10" fill="#76b900" stroke="#5f9400" stroke-width="2"/>
+<text x="1170.0" y="502.0" font-size="16" fill="#ffffff" font-weight="400" text-anchor="middle">NVIDIA Dynamo · KV router · NIXL</text>
+<text x="1170.0" y="522.8" font-size="16" fill="#ffffff" font-weight="400" text-anchor="middle">Planner · TRT-LLM / vLLM / SGLang</text>
+<path d="M630.0,510.0 L970.0,510.0" fill="none" stroke="#5f9400" stroke-width="4" marker-end="url(#mdynamo)" marker-start="url(#mdynamos)"/>
+<text x="800.0" y="498.0" font-size="16" fill="#5f9400" font-weight="600" text-anchor="middle">same software, same skills</text>
+<text x="60" y="646.0" font-size="18" fill="#0b0b0b" font-weight="700" text-anchor="start">2  Enable hardware</text>
+<rect x="230" y="584" width="400" height="108" rx="10" fill="#f0efec" stroke="#8a8984" stroke-width="2"/>
+<text x="430.0" y="630.0" font-size="16" fill="#2e2d2a" font-weight="400" text-anchor="middle">host driver R580+ · container toolkit</text>
+<text x="430.0" y="650.8" font-size="16" fill="#2e2d2a" font-weight="400" text-anchor="middle">Enroot / Apptainer · nvidia-smi sampling</text>
+<rect x="970" y="584" width="400" height="108" rx="10" fill="#f0efec" stroke="#8a8984" stroke-width="2"/>
+<text x="1170.0" y="630.0" font-size="16" fill="#2e2d2a" font-weight="400" text-anchor="middle">GPU Operator + Network Operator</text>
+<text x="1170.0" y="650.8" font-size="16" fill="#2e2d2a" font-weight="400" text-anchor="middle">DCGM · MIG · RDMA / GPUDirect</text>
+<path d="M630.0,638.0 L970.0,638.0" fill="none" stroke="#52514e" stroke-width="2" stroke-dasharray="8 6" marker-end="url(#mdefault)"/>
+<text x="800.0" y="628.0" font-size="14" fill="#52514e" font-weight="600" text-anchor="middle">scales up to</text>
+<text x="60" y="774.0" font-size="18" fill="#0b0b0b" font-weight="700" text-anchor="start">1  Provision</text>
+<rect x="230" y="712" width="400" height="108" rx="10" fill="#f0efec" stroke="#8a8984" stroke-width="2"/>
+<text x="430.0" y="758.0" font-size="16" fill="#2e2d2a" font-weight="400" text-anchor="middle">university Slurm cluster</text>
+<text x="430.0" y="778.8" font-size="16" fill="#2e2d2a" font-weight="400" text-anchor="middle">shared NFS model cache</text>
+<rect x="970" y="712" width="400" height="108" rx="10" fill="#f0efec" stroke="#8a8984" stroke-width="2"/>
+<text x="1170.0" y="758.0" font-size="16" fill="#2e2d2a" font-weight="400" text-anchor="middle">Base Command Manager</text>
+<text x="1170.0" y="778.8" font-size="16" fill="#2e2d2a" font-weight="400" text-anchor="middle">bare metal → Kubernetes</text>
+<path d="M630.0,766.0 L970.0,766.0" fill="none" stroke="#52514e" stroke-width="2" stroke-dasharray="8 6" marker-end="url(#mdefault)"/>
+<text x="800.0" y="756.0" font-size="14" fill="#52514e" font-weight="600" text-anchor="middle">scales up to</text>
+<text x="1400" y="262.0" font-size="14" fill="#52514e" font-weight="400" text-anchor="start">▲ consumption</text>
+<text x="1400" y="780.0" font-size="14" fill="#52514e" font-weight="400" text-anchor="start">▼ hardware</text>
+<text x="60" y="860.0" font-size="16" fill="#52514e" font-weight="400" text-anchor="start" font-style="italic">Measured here (8 × B300): KV-aware routing +51% tok/s/GPU on agent sessions; 4P+4D disaggregation +12% tok/s/GPU and 7× smoother streaming on the agentic trace.</text>
+</svg>

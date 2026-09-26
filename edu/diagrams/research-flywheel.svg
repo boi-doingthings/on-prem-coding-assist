@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" width="1600" height="900" font-family="Helvetica, Arial, sans-serif" role="img" aria-label="From usage to campus-tuned models: the research flywheel">
+<defs><marker id="mdefault" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#52514e"/></marker><marker id="mdefaults" viewBox="0 0 10 10" refX="1" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#52514e"/></marker><marker id="mkv" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#eb6834"/></marker><marker id="mkvs" viewBox="0 0 10 10" refX="1" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#eb6834"/></marker><marker id="mdynamo" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#5f9400"/></marker><marker id="mdynamos" viewBox="0 0 10 10" refX="1" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#5f9400"/></marker><marker id="mclient" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#2a78d6"/></marker><marker id="mclients" viewBox="0 0 10 10" refX="1" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#2a78d6"/></marker></defs>
+<rect width="1600" height="900" fill="#fcfcfb"/>
+<text x="60" y="70.0" font-size="36" fill="#0b0b0b" font-weight="700" text-anchor="start">From usage to campus-tuned models: the research flywheel</text>
+<text x="60" y="108.0" font-size="20" fill="#52514e" font-weight="400" text-anchor="start">Every stage is useful on its own; consent and governance come first</text>
+<path d="M964.0,275.7 L1121.0,324.3" fill="none" stroke="#5f9400" stroke-width="3" marker-end="url(#mdynamo)"/>
+<path d="M1285.0,451.0 L1285.0,599.0" fill="none" stroke="#5f9400" stroke-width="3" marker-end="url(#mdynamo)"/>
+<path d="M1121.0,725.7 L964.0,774.3" fill="none" stroke="#5f9400" stroke-width="3" marker-end="url(#mdynamo)"/>
+<path d="M636.0,774.3 L479.0,725.7" fill="none" stroke="#5f9400" stroke-width="3" marker-end="url(#mdynamo)"/>
+<path d="M315.0,599.0 L315.0,451.0" fill="none" stroke="#5f9400" stroke-width="3" marker-end="url(#mdynamo)"/>
+<path d="M479.0,324.3 L636.0,275.7" fill="none" stroke="#5f9400" stroke-width="3" marker-end="url(#mdynamo)"/>
+<rect x="650.0" y="163.0" width="300" height="124" rx="10" fill="#76b900" stroke="#5f9400" stroke-width="2"/>
+<text x="800.0" y="207.1" font-size="19" fill="#ffffff" font-weight="700" text-anchor="middle">1  Serve</text>
+<text x="800.0" y="232.0" font-size="14" fill="#ffffff" font-weight="400" text-anchor="middle">open models on idle GPUs</text>
+<text x="800.0" y="250.2" font-size="14" fill="#ffffff" font-weight="400" text-anchor="middle">(Dynamo)</text>
+<rect x="1134.9742261192855" y="313.0" width="300" height="124" rx="10" fill="#fdeee6" stroke="#eb6834" stroke-width="2"/>
+<text x="1284.9742261192855" y="357.1" font-size="19" fill="#6b2a0e" font-weight="700" text-anchor="middle">2  Capture</text>
+<text x="1284.9742261192855" y="382.0" font-size="14" fill="#6b2a0e" font-weight="400" text-anchor="middle">consented traces</text>
+<text x="1284.9742261192855" y="400.2" font-size="14" fill="#6b2a0e" font-weight="400" text-anchor="middle">(gateway · harness · ATIF)</text>
+<rect x="1134.9742261192857" y="613.0" width="300" height="124" rx="10" fill="#f0efec" stroke="#8a8984" stroke-width="2"/>
+<text x="1284.9742261192857" y="657.1" font-size="19" fill="#2e2d2a" font-weight="700" text-anchor="middle">3  Curate</text>
+<text x="1284.9742261192857" y="682.0" font-size="14" fill="#2e2d2a" font-weight="400" text-anchor="middle">dedupe · PII · outcome</text>
+<text x="1284.9742261192857" y="700.2" font-size="14" fill="#2e2d2a" font-weight="400" text-anchor="middle">(NeMo Curator)</text>
+<rect x="650.0" y="763.0" width="300" height="124" rx="10" fill="#e8f1fc" stroke="#2a78d6" stroke-width="2"/>
+<text x="800.0" y="807.1" font-size="19" fill="#0d366b" font-weight="700" text-anchor="middle">4  Evaluate</text>
+<text x="800.0" y="832.0" font-size="14" fill="#0d366b" font-weight="400" text-anchor="middle">campus eval set + public</text>
+<text x="800.0" y="850.2" font-size="14" fill="#0d366b" font-weight="400" text-anchor="middle">(Harbor · NeMo Evaluator)</text>
+<rect x="165.02577388071444" y="613.0000000000001" width="300" height="124" rx="10" fill="#eef7df" stroke="#5f9400" stroke-width="2"/>
+<text x="315.02577388071444" y="657.1" font-size="19" fill="#233a00" font-weight="700" text-anchor="middle">5  Fine-tune</text>
+<text x="315.02577388071444" y="682.0" font-size="14" fill="#233a00" font-weight="400" text-anchor="middle">LoRA/SFT → GRPO</text>
+<text x="315.02577388071444" y="700.2" font-size="14" fill="#233a00" font-weight="400" text-anchor="middle">(NeMo AutoModel · RL · Gym)</text>
+<rect x="165.02577388071438" y="313.0" width="300" height="124" rx="10" fill="#eef7df" stroke="#5f9400" stroke-width="2"/>
+<text x="315.0257738807144" y="357.1" font-size="19" fill="#233a00" font-weight="700" text-anchor="middle">6  Deploy &amp; A/B</text>
+<text x="315.0257738807144" y="382.0" font-size="14" fill="#233a00" font-weight="400" text-anchor="middle">LoRA adapters in Dynamo</text>
+<text x="315.0257738807144" y="400.2" font-size="14" fill="#233a00" font-weight="400" text-anchor="middle">per-course aliases</text>
+<rect x="630" y="455" width="340" height="140" rx="10" fill="#fcfcfb" stroke="#c9c8c2" stroke-width="2"/>
+<text x="800.0" y="506.8" font-size="17" fill="#52514e" font-weight="700" text-anchor="middle">Consent · IRB · retention</text>
+<text x="800.0" y="530.7" font-size="14" fill="#52514e" font-weight="400" text-anchor="middle">opt-in keys · de-identification</text>
+<text x="800.0" y="548.9" font-size="14" fill="#52514e" font-weight="400" text-anchor="middle">license checks on outputs</text>
+</svg>

@@ -19,6 +19,14 @@ supports reasoning and tool calls, and has official Dynamo agentic recipes for
 both aggregated and disaggregated serving. Keeping the model fixed lets the
 experiments attribute differences to serving topology rather than model quality.
 
+## University program kit
+
+`edu/` turns this lab into a reusable program for universities with idle
+NVIDIA GPUs (A100 → B300): program plan, model catalog by GPU tier, sizing,
+benchmarking methodology, coding-harness setup, campus-service operations,
+a traces → fine-tuning roadmap, session agendas, and six hands-on labs.
+Start at [`edu/README.md`](edu/README.md).
+
 ## Repository map
 
 - `recordbook/index.html` — visual master recordbook with diagrams and results
@@ -30,6 +38,10 @@ experiments attribute differences to serving topology rather than model quality.
 - `scripts/` — repeatable preflight and cluster lifecycle scripts
 - `config/pi-models.json` — reviewed Pi provider definition for the local API
 - `deploy/` — site-specific Dynamo manifests (added after platform validation)
+- `deploy/edu/` — portable launcher, Slurm job, and campus gateway stack
+- `config/edu-models/` — model profiles per GPU tier; `config/harnesses/` — harness templates
+- `tools/` — `sizing.py` (fit/KV estimator) and `summarize-aiperf.py` (Pareto charts)
+- `edu/` — university session kit (modules, sessions, labs, dated research notes)
 - `upstream/dynamo/` — ignored shallow checkout used as pinned source material
 
 Serve the recordbook with working links to its local raw artifacts:
@@ -60,11 +72,15 @@ notebook so the Git repository stays small and safe to share.
 
 ## Quick status
 
-See `notes/lab-notebook.md`. The active deployment is Qwen3.5-122B-A10B NVFP4
-with one prefill worker on GPU 0 and two decode workers on GPUs 1 and 2. NIXL
-uses UCX for same-node KV transfer, and Pi is configured against the local
-OpenAI-compatible endpoint. GPU 3 is deliberately unused because it contains a
-stale process owned by another account.
+See `notes/lab-notebook.md`. As of 2026-09-26 the lab runs Dynamo
+`vllm-runtime:1.5.0` on a full 8 × B300 node. The 1.3.0 concurrency cliff for
+hybrid Qwen models is gone
+(`results/dynamo-1.5-hybrid-models-2026-09-26.md`). The measured feature
+showcase is in `edu/08-dynamo-showcase.md`, covering KV-aware routing,
+aggregated vs disaggregated, conditional disaggregation and multi-model serving.
+The projectable version is `edu/showcase/index.html`. Showcase topologies
+start with `./scripts/start-showcase.sh`; the scripts below are the original
+Sessions 002–004 1.3.0 deployment.
 
 ## Local runbook
 

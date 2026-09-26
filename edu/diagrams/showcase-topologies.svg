@@ -1,0 +1,114 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" width="1600" height="900" font-family="Helvetica, Arial, sans-serif" role="img" aria-label="Showcase topologies on one 8 × B300 node">
+<defs><marker id="mdefault" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#52514e"/></marker><marker id="mdefaults" viewBox="0 0 10 10" refX="1" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#52514e"/></marker><marker id="mkv" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#eb6834"/></marker><marker id="mkvs" viewBox="0 0 10 10" refX="1" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#eb6834"/></marker><marker id="mdynamo" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#5f9400"/></marker><marker id="mdynamos" viewBox="0 0 10 10" refX="1" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#5f9400"/></marker><marker id="mclient" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#2a78d6"/></marker><marker id="mclients" viewBox="0 0 10 10" refX="1" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#2a78d6"/></marker></defs>
+<rect width="1600" height="900" fill="#fcfcfb"/>
+<text x="60" y="70.0" font-size="36" fill="#0b0b0b" font-weight="700" text-anchor="start">Showcase topologies on one 8 × B300 node</text>
+<text x="60" y="108.0" font-size="20" fill="#52514e" font-weight="400" text-anchor="start">Same model (Qwen3.5-122B-A10B NVFP4), same Dynamo 1.5.0, same trace — only the serving layout changes</text>
+<text x="60" y="190.0" font-size="22" fill="#0b0b0b" font-weight="700" text-anchor="start">A. Aggregated ×8, KV router</text>
+<text x="60" y="218.0" font-size="16" fill="#52514e" font-weight="400" text-anchor="start">KV-aware router on :8000</text>
+<rect x="560" y="160" width="110" height="110" rx="8" fill="#76b900"/>
+<text x="615" y="210.0" font-size="16" fill="#ffffff" font-weight="700" text-anchor="middle">B300 0</text>
+<text x="615" y="236.0" font-size="15" fill="#ffffff" font-weight="400" text-anchor="middle">P+D</text>
+<rect x="682" y="160" width="110" height="110" rx="8" fill="#76b900"/>
+<text x="737" y="210.0" font-size="16" fill="#ffffff" font-weight="700" text-anchor="middle">B300 1</text>
+<text x="737" y="236.0" font-size="15" fill="#ffffff" font-weight="400" text-anchor="middle">P+D</text>
+<rect x="804" y="160" width="110" height="110" rx="8" fill="#76b900"/>
+<text x="859" y="210.0" font-size="16" fill="#ffffff" font-weight="700" text-anchor="middle">B300 2</text>
+<text x="859" y="236.0" font-size="15" fill="#ffffff" font-weight="400" text-anchor="middle">P+D</text>
+<rect x="926" y="160" width="110" height="110" rx="8" fill="#76b900"/>
+<text x="981" y="210.0" font-size="16" fill="#ffffff" font-weight="700" text-anchor="middle">B300 3</text>
+<text x="981" y="236.0" font-size="15" fill="#ffffff" font-weight="400" text-anchor="middle">P+D</text>
+<rect x="1048" y="160" width="110" height="110" rx="8" fill="#76b900"/>
+<text x="1103" y="210.0" font-size="16" fill="#ffffff" font-weight="700" text-anchor="middle">B300 4</text>
+<text x="1103" y="236.0" font-size="15" fill="#ffffff" font-weight="400" text-anchor="middle">P+D</text>
+<rect x="1170" y="160" width="110" height="110" rx="8" fill="#76b900"/>
+<text x="1225" y="210.0" font-size="16" fill="#ffffff" font-weight="700" text-anchor="middle">B300 5</text>
+<text x="1225" y="236.0" font-size="15" fill="#ffffff" font-weight="400" text-anchor="middle">P+D</text>
+<rect x="1292" y="160" width="110" height="110" rx="8" fill="#76b900"/>
+<text x="1347" y="210.0" font-size="16" fill="#ffffff" font-weight="700" text-anchor="middle">B300 6</text>
+<text x="1347" y="236.0" font-size="15" fill="#ffffff" font-weight="400" text-anchor="middle">P+D</text>
+<rect x="1414" y="160" width="110" height="110" rx="8" fill="#76b900"/>
+<text x="1469" y="210.0" font-size="16" fill="#ffffff" font-weight="700" text-anchor="middle">B300 7</text>
+<text x="1469" y="236.0" font-size="15" fill="#ffffff" font-weight="400" text-anchor="middle">P+D</text>
+<text x="60" y="370.0" font-size="22" fill="#0b0b0b" font-weight="700" text-anchor="start">B. Aggregated ×8, round-robin</text>
+<text x="60" y="398.0" font-size="16" fill="#52514e" font-weight="400" text-anchor="start">round-robin router on :8001 (same workers)</text>
+<rect x="560" y="340" width="110" height="110" rx="8" fill="#76b900"/>
+<text x="615" y="390.0" font-size="16" fill="#ffffff" font-weight="700" text-anchor="middle">B300 0</text>
+<text x="615" y="416.0" font-size="15" fill="#ffffff" font-weight="400" text-anchor="middle">P+D</text>
+<rect x="682" y="340" width="110" height="110" rx="8" fill="#76b900"/>
+<text x="737" y="390.0" font-size="16" fill="#ffffff" font-weight="700" text-anchor="middle">B300 1</text>
+<text x="737" y="416.0" font-size="15" fill="#ffffff" font-weight="400" text-anchor="middle">P+D</text>
+<rect x="804" y="340" width="110" height="110" rx="8" fill="#76b900"/>
+<text x="859" y="390.0" font-size="16" fill="#ffffff" font-weight="700" text-anchor="middle">B300 2</text>
+<text x="859" y="416.0" font-size="15" fill="#ffffff" font-weight="400" text-anchor="middle">P+D</text>
+<rect x="926" y="340" width="110" height="110" rx="8" fill="#76b900"/>
+<text x="981" y="390.0" font-size="16" fill="#ffffff" font-weight="700" text-anchor="middle">B300 3</text>
+<text x="981" y="416.0" font-size="15" fill="#ffffff" font-weight="400" text-anchor="middle">P+D</text>
+<rect x="1048" y="340" width="110" height="110" rx="8" fill="#76b900"/>
+<text x="1103" y="390.0" font-size="16" fill="#ffffff" font-weight="700" text-anchor="middle">B300 4</text>
+<text x="1103" y="416.0" font-size="15" fill="#ffffff" font-weight="400" text-anchor="middle">P+D</text>
+<rect x="1170" y="340" width="110" height="110" rx="8" fill="#76b900"/>
+<text x="1225" y="390.0" font-size="16" fill="#ffffff" font-weight="700" text-anchor="middle">B300 5</text>
+<text x="1225" y="416.0" font-size="15" fill="#ffffff" font-weight="400" text-anchor="middle">P+D</text>
+<rect x="1292" y="340" width="110" height="110" rx="8" fill="#76b900"/>
+<text x="1347" y="390.0" font-size="16" fill="#ffffff" font-weight="700" text-anchor="middle">B300 6</text>
+<text x="1347" y="416.0" font-size="15" fill="#ffffff" font-weight="400" text-anchor="middle">P+D</text>
+<rect x="1414" y="340" width="110" height="110" rx="8" fill="#76b900"/>
+<text x="1469" y="390.0" font-size="16" fill="#ffffff" font-weight="700" text-anchor="middle">B300 7</text>
+<text x="1469" y="416.0" font-size="15" fill="#ffffff" font-weight="400" text-anchor="middle">P+D</text>
+<text x="60" y="550.0" font-size="22" fill="#0b0b0b" font-weight="700" text-anchor="start">C. Disaggregated 2P + 6D</text>
+<text x="60" y="578.0" font-size="16" fill="#52514e" font-weight="400" text-anchor="start">NIXL KV transfer prefill → decode</text>
+<rect x="560" y="520" width="110" height="110" rx="8" fill="#eb6834"/>
+<text x="615" y="570.0" font-size="16" fill="#ffffff" font-weight="700" text-anchor="middle">B300 0</text>
+<text x="615" y="596.0" font-size="15" fill="#ffffff" font-weight="400" text-anchor="middle">Prefill</text>
+<rect x="682" y="520" width="110" height="110" rx="8" fill="#eb6834"/>
+<text x="737" y="570.0" font-size="16" fill="#ffffff" font-weight="700" text-anchor="middle">B300 1</text>
+<text x="737" y="596.0" font-size="15" fill="#ffffff" font-weight="400" text-anchor="middle">Prefill</text>
+<rect x="804" y="520" width="110" height="110" rx="8" fill="#2a78d6"/>
+<text x="859" y="570.0" font-size="16" fill="#ffffff" font-weight="700" text-anchor="middle">B300 2</text>
+<text x="859" y="596.0" font-size="15" fill="#ffffff" font-weight="400" text-anchor="middle">Decode</text>
+<rect x="926" y="520" width="110" height="110" rx="8" fill="#2a78d6"/>
+<text x="981" y="570.0" font-size="16" fill="#ffffff" font-weight="700" text-anchor="middle">B300 3</text>
+<text x="981" y="596.0" font-size="15" fill="#ffffff" font-weight="400" text-anchor="middle">Decode</text>
+<rect x="1048" y="520" width="110" height="110" rx="8" fill="#2a78d6"/>
+<text x="1103" y="570.0" font-size="16" fill="#ffffff" font-weight="700" text-anchor="middle">B300 4</text>
+<text x="1103" y="596.0" font-size="15" fill="#ffffff" font-weight="400" text-anchor="middle">Decode</text>
+<rect x="1170" y="520" width="110" height="110" rx="8" fill="#2a78d6"/>
+<text x="1225" y="570.0" font-size="16" fill="#ffffff" font-weight="700" text-anchor="middle">B300 5</text>
+<text x="1225" y="596.0" font-size="15" fill="#ffffff" font-weight="400" text-anchor="middle">Decode</text>
+<rect x="1292" y="520" width="110" height="110" rx="8" fill="#2a78d6"/>
+<text x="1347" y="570.0" font-size="16" fill="#ffffff" font-weight="700" text-anchor="middle">B300 6</text>
+<text x="1347" y="596.0" font-size="15" fill="#ffffff" font-weight="400" text-anchor="middle">Decode</text>
+<rect x="1414" y="520" width="110" height="110" rx="8" fill="#2a78d6"/>
+<text x="1469" y="570.0" font-size="16" fill="#ffffff" font-weight="700" text-anchor="middle">B300 7</text>
+<text x="1469" y="596.0" font-size="15" fill="#ffffff" font-weight="400" text-anchor="middle">Decode</text>
+<path d="M792.0,645.0 L914.0,645.0" fill="none" stroke="#eb6834" stroke-width="3" marker-end="url(#mkv)"/>
+<text x="853.0" y="663.0" font-size="14" fill="#eb6834" font-weight="600" text-anchor="middle">NIXL</text>
+<text x="60" y="730.0" font-size="22" fill="#0b0b0b" font-weight="700" text-anchor="start">D. Disaggregated 4P + 4D</text>
+<text x="60" y="758.0" font-size="16" fill="#52514e" font-weight="400" text-anchor="start">more prefill for long prompts</text>
+<rect x="560" y="700" width="110" height="110" rx="8" fill="#eb6834"/>
+<text x="615" y="750.0" font-size="16" fill="#ffffff" font-weight="700" text-anchor="middle">B300 0</text>
+<text x="615" y="776.0" font-size="15" fill="#ffffff" font-weight="400" text-anchor="middle">Prefill</text>
+<rect x="682" y="700" width="110" height="110" rx="8" fill="#eb6834"/>
+<text x="737" y="750.0" font-size="16" fill="#ffffff" font-weight="700" text-anchor="middle">B300 1</text>
+<text x="737" y="776.0" font-size="15" fill="#ffffff" font-weight="400" text-anchor="middle">Prefill</text>
+<rect x="804" y="700" width="110" height="110" rx="8" fill="#eb6834"/>
+<text x="859" y="750.0" font-size="16" fill="#ffffff" font-weight="700" text-anchor="middle">B300 2</text>
+<text x="859" y="776.0" font-size="15" fill="#ffffff" font-weight="400" text-anchor="middle">Prefill</text>
+<rect x="926" y="700" width="110" height="110" rx="8" fill="#eb6834"/>
+<text x="981" y="750.0" font-size="16" fill="#ffffff" font-weight="700" text-anchor="middle">B300 3</text>
+<text x="981" y="776.0" font-size="15" fill="#ffffff" font-weight="400" text-anchor="middle">Prefill</text>
+<rect x="1048" y="700" width="110" height="110" rx="8" fill="#2a78d6"/>
+<text x="1103" y="750.0" font-size="16" fill="#ffffff" font-weight="700" text-anchor="middle">B300 4</text>
+<text x="1103" y="776.0" font-size="15" fill="#ffffff" font-weight="400" text-anchor="middle">Decode</text>
+<rect x="1170" y="700" width="110" height="110" rx="8" fill="#2a78d6"/>
+<text x="1225" y="750.0" font-size="16" fill="#ffffff" font-weight="700" text-anchor="middle">B300 5</text>
+<text x="1225" y="776.0" font-size="15" fill="#ffffff" font-weight="400" text-anchor="middle">Decode</text>
+<rect x="1292" y="700" width="110" height="110" rx="8" fill="#2a78d6"/>
+<text x="1347" y="750.0" font-size="16" fill="#ffffff" font-weight="700" text-anchor="middle">B300 6</text>
+<text x="1347" y="776.0" font-size="15" fill="#ffffff" font-weight="400" text-anchor="middle">Decode</text>
+<rect x="1414" y="700" width="110" height="110" rx="8" fill="#2a78d6"/>
+<text x="1469" y="750.0" font-size="16" fill="#ffffff" font-weight="700" text-anchor="middle">B300 7</text>
+<text x="1469" y="776.0" font-size="15" fill="#ffffff" font-weight="400" text-anchor="middle">Decode</text>
+<path d="M1036.0,825.0 L1158.0,825.0" fill="none" stroke="#eb6834" stroke-width="3" marker-end="url(#mkv)"/>
+<text x="1097.0" y="843.0" font-size="14" fill="#eb6834" font-weight="600" text-anchor="middle">NIXL</text>
+</svg>

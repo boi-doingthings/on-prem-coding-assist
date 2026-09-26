@@ -1,0 +1,95 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" width="1600" height="900" font-family="Helvetica, Arial, sans-serif" role="img" aria-label="Aggregated vs disaggregated serving">
+<defs><marker id="mdefault" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#52514e"/></marker><marker id="mdefaults" viewBox="0 0 10 10" refX="1" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#52514e"/></marker><marker id="mkv" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#eb6834"/></marker><marker id="mkvs" viewBox="0 0 10 10" refX="1" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#eb6834"/></marker><marker id="mdynamo" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#5f9400"/></marker><marker id="mdynamos" viewBox="0 0 10 10" refX="1" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#5f9400"/></marker><marker id="mclient" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#2a78d6"/></marker><marker id="mclients" viewBox="0 0 10 10" refX="1" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#2a78d6"/></marker></defs>
+<rect width="1600" height="900" fill="#fcfcfb"/>
+<text x="60" y="70.0" font-size="36" fill="#0b0b0b" font-weight="700" text-anchor="start">Aggregated vs disaggregated serving</text>
+<text x="60" y="108.0" font-size="20" fill="#52514e" font-weight="400" text-anchor="start">Prefill (reading the prompt) and decode (writing tokens) stress GPUs differently. Disaggregation lets each scale separately.</text>
+<rect x="60" y="150" width="700" height="600" rx="10" fill="#fcfcfb" stroke="#c9c8c2" stroke-width="2"/>
+<text x="410" y="190.0" font-size="26" fill="#0b0b0b" font-weight="700" text-anchor="middle">Aggregated</text>
+<text x="410" y="220.0" font-size="16" fill="#52514e" font-weight="400" text-anchor="middle">every GPU runs prefill and decode</text>
+<rect x="110" y="250" width="600" height="60" rx="10" fill="#76b900" stroke="#5f9400" stroke-width="2"/>
+<text x="410.0" y="283.1" font-size="18" fill="#ffffff" font-weight="700" text-anchor="middle">KV-aware router</text>
+<path d="M178.0,310.0 L178.0,350.0" fill="none" stroke="#5f9400" stroke-width="2.5" marker-end="url(#mdynamo)"/>
+<rect x="110" y="350" width="136" height="150" rx="10" fill="#ffffff" stroke="#5f9400" stroke-width="2"/>
+<text x="178.0" y="406.6" font-size="16" fill="#233a00" font-weight="700" text-anchor="middle">Worker 1</text>
+<text x="178.0" y="430.0" font-size="14" fill="#233a00" font-weight="400" text-anchor="middle">prefill</text>
+<text x="178.0" y="448.2" font-size="14" fill="#233a00" font-weight="400" text-anchor="middle">+ decode</text>
+<rect x="118" y="515" width="120" height="50" rx="6" fill="#1f1f1d" stroke="#1f1f1d" stroke-width="2"/>
+<text x="178.0" y="546.0" font-size="16" fill="#ffffff" font-weight="700" text-anchor="middle">GPU</text>
+<path d="M330.0,310.0 L330.0,350.0" fill="none" stroke="#5f9400" stroke-width="2.5" marker-end="url(#mdynamo)"/>
+<rect x="262" y="350" width="136" height="150" rx="10" fill="#ffffff" stroke="#5f9400" stroke-width="2"/>
+<text x="330.0" y="406.6" font-size="16" fill="#233a00" font-weight="700" text-anchor="middle">Worker 2</text>
+<text x="330.0" y="430.0" font-size="14" fill="#233a00" font-weight="400" text-anchor="middle">prefill</text>
+<text x="330.0" y="448.2" font-size="14" fill="#233a00" font-weight="400" text-anchor="middle">+ decode</text>
+<rect x="270" y="515" width="120" height="50" rx="6" fill="#1f1f1d" stroke="#1f1f1d" stroke-width="2"/>
+<text x="330.0" y="546.0" font-size="16" fill="#ffffff" font-weight="700" text-anchor="middle">GPU</text>
+<path d="M482.0,310.0 L482.0,350.0" fill="none" stroke="#5f9400" stroke-width="2.5" marker-end="url(#mdynamo)"/>
+<rect x="414" y="350" width="136" height="150" rx="10" fill="#ffffff" stroke="#5f9400" stroke-width="2"/>
+<text x="482.0" y="406.6" font-size="16" fill="#233a00" font-weight="700" text-anchor="middle">Worker 3</text>
+<text x="482.0" y="430.0" font-size="14" fill="#233a00" font-weight="400" text-anchor="middle">prefill</text>
+<text x="482.0" y="448.2" font-size="14" fill="#233a00" font-weight="400" text-anchor="middle">+ decode</text>
+<rect x="422" y="515" width="120" height="50" rx="6" fill="#1f1f1d" stroke="#1f1f1d" stroke-width="2"/>
+<text x="482.0" y="546.0" font-size="16" fill="#ffffff" font-weight="700" text-anchor="middle">GPU</text>
+<path d="M634.0,310.0 L634.0,350.0" fill="none" stroke="#5f9400" stroke-width="2.5" marker-end="url(#mdynamo)"/>
+<rect x="566" y="350" width="136" height="150" rx="10" fill="#ffffff" stroke="#5f9400" stroke-width="2"/>
+<text x="634.0" y="406.6" font-size="16" fill="#233a00" font-weight="700" text-anchor="middle">Worker 4</text>
+<text x="634.0" y="430.0" font-size="14" fill="#233a00" font-weight="400" text-anchor="middle">prefill</text>
+<text x="634.0" y="448.2" font-size="14" fill="#233a00" font-weight="400" text-anchor="middle">+ decode</text>
+<rect x="574" y="515" width="120" height="50" rx="6" fill="#1f1f1d" stroke="#1f1f1d" stroke-width="2"/>
+<text x="634.0" y="546.0" font-size="16" fill="#ffffff" font-weight="700" text-anchor="middle">GPU</text>
+<text x="410" y="610.0" font-size="16" fill="#233a00" font-weight="600" text-anchor="middle">+ simplest · best when prompts are short or cache hits are high</text>
+<text x="410" y="640.0" font-size="16" fill="#e34948" font-weight="600" text-anchor="middle">– a long new prompt stalls every stream on that GPU</text>
+<text x="110" y="690.0" font-size="14" fill="#52514e" font-weight="600" text-anchor="start">GPU timeline</text>
+<rect x="220" y="676" width="36" height="22" rx="3" fill="#76b900"/>
+<rect x="260" y="676" width="36" height="22" rx="3" fill="#76b900"/>
+<rect x="300" y="676" width="166" height="22" rx="3" fill="#eb6834"/>
+<rect x="470" y="676" width="36" height="22" rx="3" fill="#76b900"/>
+<rect x="510" y="676" width="36" height="22" rx="3" fill="#76b900"/>
+<rect x="550" y="676" width="36" height="22" rx="3" fill="#76b900"/>
+<text x="305" y="718.0" font-size="13" fill="#e34948" font-weight="600" text-anchor="middle">long prefill → token stall (ITL spike)</text>
+<rect x="500" y="680" width="14" height="14" rx="2" fill="#76b900"/>
+<text x="520" y="692.0" font-size="13" fill="#52514e" font-weight="400" text-anchor="start">decode step</text>
+<rect x="610" y="680" width="14" height="14" rx="2" fill="#eb6834"/>
+<text x="630" y="692.0" font-size="13" fill="#52514e" font-weight="400" text-anchor="start">prefill</text>
+<rect x="840" y="150" width="700" height="600" rx="10" fill="#fcfcfb" stroke="#c9c8c2" stroke-width="2"/>
+<text x="1190" y="190.0" font-size="26" fill="#0b0b0b" font-weight="700" text-anchor="middle">Disaggregated</text>
+<text x="1190" y="220.0" font-size="16" fill="#52514e" font-weight="400" text-anchor="middle">specialized pools, KV moved over NIXL</text>
+<rect x="890" y="250" width="600" height="60" rx="10" fill="#76b900" stroke="#5f9400" stroke-width="2"/>
+<text x="1190.0" y="283.1" font-size="18" fill="#ffffff" font-weight="700" text-anchor="middle">KV-aware router</text>
+<path d="M990.0,310.0 L990.0,350.0" fill="none" stroke="#5f9400" stroke-width="2.5" marker-end="url(#mdynamo)"/>
+<rect x="890" y="350" width="200" height="150" rx="10" fill="#ffffff" stroke="#5f9400" stroke-width="2"/>
+<text x="990.0" y="397.5" font-size="16" fill="#233a00" font-weight="700" text-anchor="middle">Prefill pool</text>
+<text x="990.0" y="420.9" font-size="14" fill="#233a00" font-weight="400" text-anchor="middle">compute-bound</text>
+<text x="990.0" y="439.1" font-size="14" fill="#233a00" font-weight="400" text-anchor="middle">big batches of</text>
+<text x="990.0" y="457.3" font-size="14" fill="#233a00" font-weight="400" text-anchor="middle">prompt tokens</text>
+<rect x="900" y="515" width="85" height="50" rx="6" fill="#1f1f1d" stroke="#1f1f1d" stroke-width="2"/>
+<text x="942.5" y="546.0" font-size="16" fill="#ffffff" font-weight="700" text-anchor="middle">GPU</text>
+<rect x="995" y="515" width="85" height="50" rx="6" fill="#1f1f1d" stroke="#1f1f1d" stroke-width="2"/>
+<text x="1037.5" y="546.0" font-size="16" fill="#ffffff" font-weight="700" text-anchor="middle">GPU</text>
+<path d="M1090.0,425.0 L1180.0,425.0" fill="none" stroke="#eb6834" stroke-width="5" marker-end="url(#mkv)"/>
+<text x="1135.0" y="415.0" font-size="14" fill="#eb6834" font-weight="600" text-anchor="middle">NIXL</text>
+<text x="1135" y="455.0" font-size="13" fill="#eb6834" font-weight="600" text-anchor="middle">KV blocks</text>
+<rect x="1180" y="350" width="310" height="150" rx="10" fill="#ffffff" stroke="#5f9400" stroke-width="2"/>
+<text x="1335.0" y="397.5" font-size="16" fill="#233a00" font-weight="700" text-anchor="middle">Decode pool</text>
+<text x="1335.0" y="420.9" font-size="14" fill="#233a00" font-weight="400" text-anchor="middle">bandwidth-bound</text>
+<text x="1335.0" y="439.1" font-size="14" fill="#233a00" font-weight="400" text-anchor="middle">hundreds of streams</text>
+<text x="1335.0" y="457.3" font-size="14" fill="#233a00" font-weight="400" text-anchor="middle">steady token rate</text>
+<rect x="1190" y="515" width="90" height="50" rx="6" fill="#1f1f1d" stroke="#1f1f1d" stroke-width="2"/>
+<text x="1235.0" y="546.0" font-size="16" fill="#ffffff" font-weight="700" text-anchor="middle">GPU</text>
+<rect x="1290" y="515" width="90" height="50" rx="6" fill="#1f1f1d" stroke="#1f1f1d" stroke-width="2"/>
+<text x="1335.0" y="546.0" font-size="16" fill="#ffffff" font-weight="700" text-anchor="middle">GPU</text>
+<rect x="1390" y="515" width="90" height="50" rx="6" fill="#1f1f1d" stroke="#1f1f1d" stroke-width="2"/>
+<text x="1435.0" y="546.0" font-size="16" fill="#ffffff" font-weight="700" text-anchor="middle">GPU</text>
+<path d="M1335.0,310.0 L1335.0,350.0" fill="none" stroke="#5f9400" stroke-width="2.5" stroke-dasharray="8 6" marker-end="url(#mdynamo)"/>
+<text x="1190" y="610.0" font-size="16" fill="#233a00" font-weight="600" text-anchor="middle">+ steady inter-token latency under long prompts</text>
+<text x="1190" y="640.0" font-size="16" fill="#233a00" font-weight="600" text-anchor="middle">+ size prefill vs decode GPUs to the workload (xPyD)</text>
+<text x="1190" y="670.0" font-size="16" fill="#e34948" font-weight="600" text-anchor="middle">– KV transfer cost; one prefill pool can become the bottleneck</text>
+<text x="1190" y="718.0" font-size="15" fill="#52514e" font-weight="400" text-anchor="middle" font-style="italic">Measure both: the winner depends on prompt length, reuse and SLO</text>
+<rect x="560" y="800" width="22" height="16" rx="3" fill="#76b900" stroke="#5f9400" stroke-width="2"/>
+<text x="590" y="814.0" font-size="15" fill="#52514e" font-weight="400" text-anchor="start">Dynamo</text>
+<rect x="790" y="800" width="22" height="16" rx="3" fill="#ffffff" stroke="#5f9400" stroke-width="2"/>
+<text x="820" y="814.0" font-size="15" fill="#52514e" font-weight="400" text-anchor="start">engine worker</text>
+<rect x="1020" y="800" width="22" height="16" rx="3" fill="#fdeee6" stroke="#eb6834" stroke-width="2"/>
+<text x="1050" y="814.0" font-size="15" fill="#52514e" font-weight="400" text-anchor="start">KV cache data</text>
+<rect x="1250" y="800" width="22" height="16" rx="3" fill="#1f1f1d" stroke="#1f1f1d" stroke-width="2"/>
+<text x="1280" y="814.0" font-size="15" fill="#52514e" font-weight="400" text-anchor="start">GPU</text>
+</svg>

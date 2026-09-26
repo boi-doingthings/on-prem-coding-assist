@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Idle GPUs → Campus AI · NVIDIA Dynamo showcase</title>
+<style>
+:root{--ink:#0b0b0b;--muted:#52514e;--paper:#fcfcfb;--panel:#ffffff;--line:#e4e3df;--green:#76b900;--gdark:#3f6b00;--gsoft:#eef7df;--blue:#2a78d6;--orange:#eb6834}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;background:var(--paper);color:var(--ink);font:17px/1.55 Helvetica,Arial,sans-serif}
+nav{position:sticky;top:0;z-index:5;display:flex;gap:18px;flex-wrap:wrap;padding:10px 32px;background:#111;border-bottom:3px solid var(--green)}
+nav a{color:#ddd;text-decoration:none;font-size:14px}nav a:hover{color:var(--green)}nav b{color:#fff;margin-right:12px}
+header{padding:64px 32px 40px;max-width:1280px;margin:auto}
+header h1{font-size:52px;line-height:1.05;margin:0 0 12px;letter-spacing:-.02em}
+header p{font-size:21px;color:var(--muted);max-width:900px;margin:0}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:32px}
+.kpi{background:var(--panel);border:1px solid var(--line);border-top:4px solid var(--green);border-radius:10px;padding:18px}
+.kpi .v{font-size:clamp(22px,2.6vw,34px);font-weight:700;white-space:nowrap}.kpi .l{color:var(--muted);font-size:14px}
+section{max-width:1280px;margin:0 auto;padding:48px 32px;border-top:1px solid var(--line)}
+section h2{font-size:34px;margin:0 0 6px;letter-spacing:-.01em}
+section .lead{font-size:19px;color:var(--muted);margin:0 0 22px;max-width:1000px}
+figure{margin:0 0 22px;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px}
+figure img{width:100%;height:auto;display:block}
+figcaption{font-size:14px;color:var(--muted);padding:8px 6px 2px}
+.take{background:var(--gsoft);border-left:5px solid var(--green);border-radius:8px;padding:14px 18px;margin:14px 0}
+.take.trade{background:#fdeee6;border-left-color:var(--orange)}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+table{border-collapse:collapse;width:100%;font-size:15px;background:var(--panel)}
+th,td{border-bottom:1px solid var(--line);padding:8px 10px;text-align:right}th:first-child,td:first-child,th:nth-child(2),td:nth-child(2){text-align:left}
+th{background:#f0efec;font-size:13px;text-transform:uppercase;letter-spacing:.04em}
+tr.win td{font-weight:700}
+code{background:#f0efec;border-radius:4px;padding:1px 5px;font-size:.9em}
+footer{max-width:1280px;margin:auto;padding:32px;color:var(--muted);font-size:14px;border-top:1px solid var(--line)}
+@media(max-width:900px){.kpis{grid-template-columns:1fr 1fr}.two{grid-template-columns:1fr}header h1{font-size:36px}}
+@media print{nav{display:none}section{page-break-before:always;border:0}}
+</style>
+</head>
+<body>
+<nav><b>Campus AI · Dynamo</b>
+<a href="#stack">Stack</a><a href="#arch">Architecture</a><a href="#request">One request</a><a href="#routing">KV routing</a>
+<a href="#disagg">Disaggregation</a><a href="#cond">Conditional disagg</a><a href="#multimodel">Multi-model</a><a href="#version">Engine version</a>
+<a href="#service">Campus service</a><a href="#flywheel">Research flywheel</a><a href="#repro">Reproduce</a></nav>
+
+<header>
+<div style="color:var(--gdark);font-weight:700;letter-spacing:.12em;font-size:13px">NVIDIA HIGHER EDUCATION &amp; RESEARCH · SEPTEMBER 2026</div>
+<h1>Idle GPUs → Campus AI</h1>
+<p>Serving open models on a university's own NVIDIA GPUs with NVIDIA Dynamo. Every number on this page was
+measured on one 8 × B300 node with Qwen3.5-122B-A10B (NVFP4) and Dynamo 1.5.0, from cold caches, changing one
+feature at a time.</p>
+<div class="kpis">
+<div class="kpi"><div class="v">+51%</div><div class="l">output tokens/s per GPU from KV-aware routing (multi-turn agent sessions, 64 concurrent)</div></div>
+<div class="kpi"><div class="v">1.8×</div><div class="l">faster first token from KV-aware routing (70% vs 34% prefix-cache hits)</div></div>
+<div class="kpi"><div class="v">7–22×</div><div class="l">smoother token streaming (ITL p99) with disaggregated prefill/decode on 64K-token prompts</div></div>
+<div class="kpi"><div class="v">4×</div><div class="l">more throughput per B300 after upgrading Dynamo 1.3 → 1.5 (hybrid-model fix)</div></div>
+</div>
+</header>
+
+<section id="stack"><h2>Where this fits: campus lab → AI factory</h2>
+<p class="lead">Students learn the same serving layer that runs NVIDIA's production inference stack. Only provisioning and orchestration differ.</p>
+<figure><img src="../diagrams/campus-to-ai-factory.svg" alt="Campus lab layers mapped to DSX OS layers"><figcaption>Interactive DSX OS stack: <a href="../reference/dsx-os/structure.html">reference/dsx-os/structure.html</a></figcaption></figure>
+</section>
+
+<section id="arch"><h2>NVIDIA Dynamo architecture</h2>
+<p class="lead">OpenAI/Anthropic-compatible frontend, a KV-aware router with a global view of every worker's cache, and engine workers (vLLM, SGLang, TensorRT-LLM) that can split prefill from decode.</p>
+<figure><img src="../diagrams/dynamo-architecture.svg" alt="Dynamo architecture"></figure>
+<figure><img src="../diagrams/showcase-topologies.svg" alt="Topologies tested on 8 B300"></figure>
+</section>
+
+<section id="request"><h2>Anatomy of one request</h2>
+<p class="lead">Prefill (reading the prompt) sets time-to-first-token and is compute-bound. Decode (writing tokens) sets tokens/s and is memory-bandwidth-bound. Every Dynamo feature targets one of the two.</p>
+<figure><img src="../diagrams/request-lifecycle.svg" alt="Prefill vs decode and KV cache costs"></figure>
+</section>
+
+<section id="routing"><h2>Feature 1 · KV-aware routing</h2>
+<p class="lead">Coding agents resend the whole conversation every turn. The router sends each request to the worker that already holds its prefix, so prefill becomes a cache lookup.</p>
+<figure><img src="../diagrams/kv-aware-routing.svg" alt="KV-aware routing explained"></figure>
+<figure><img src="../../results/showcase/routing-multiturn.svg" alt="KV vs round-robin on multi-turn sessions"><figcaption>Same 8 workers, two frontends (KV-aware :8000, round-robin :8001). 128 sessions × 6 turns, 30K private context each.</figcaption></figure>
+<div class="take"><b>Result:</b> cache hits 67–70% vs 33–34%, which gives <b>+35–51% output tokens/s per GPU</b>, <b>1.7–1.8× faster first token</b> and <b>1.4–1.5× faster requests</b>. Only the router changed.</div>
+<figure><img src="../../results/showcase/routing-trace.svg" alt="KV vs round-robin on agentic trace"><figcaption>NVIDIA agentic coding trace (median 64K-token prompts). Reuse here is dominated by 4 shared system prefixes, so gains are smaller: +8–21% tokens/s/GPU and a 13–32% better TTFT p99.</figcaption></figure>
+<div class="take trade"><b>Trade-off:</b> routing to cache-hot workers concentrates load, so ITL was 11–26% worse on the trace. Router knobs (overlap credit, temperature, load weight) tune cache affinity against balance.</div>
+</section>
+
+<section id="disagg"><h2>Feature 2 · Disaggregated prefill / decode</h2>
+<p class="lead">Separate GPU pools for prefill and decode, with KV cache moved between them by NIXL over NVLink or RDMA. Long prompts no longer stall token streams, and each pool can be sized independently.</p>
+<figure><img src="../diagrams/aggregated-vs-disaggregated.svg" alt="Aggregated vs disaggregated"></figure>
+<figure><img src="../../results/showcase/disagg-trace.svg" alt="Aggregated vs disaggregated on agentic trace"></figure>
+<figure><img src="../../results/showcase/disagg-multiturn.svg" alt="Aggregated vs disaggregated on multi-turn sessions"></figure>
+<div class="take"><b>Result:</b> with the right ratio (<b>4 prefill + 4 decode</b>), disaggregation beats 8 aggregated replicas on throughput (+4–12% trace, +5–9% sessions) and request latency (up to 19% faster), with a <b>7–22× smoother streaming tail</b>.</div>
+<div class="take trade"><b>Trade-off:</b> with too little prefill (2P + 6D), 64K-token prompts queue: TTFT reached 5.7–14 s and throughput fell 21–36%. Sizing the pools is the job of Dynamo's SLA planner, or of a sweep.</div>
+</section>
+
+<section id="cond"><h2>Feature 3 · Conditional disaggregation</h2>
+<p class="lead">A 1.5 router policy (experimental): requests whose uncached prefill is small, such as cache-hit agent turns, skip the prefill pool and run on the decode worker that already holds their KV. Cold, long prompts still go to prefill.</p>
+<figure><img src="../../results/showcase/conditional-disagg.svg" alt="Plain vs conditional disaggregation on the agentic trace"></figure>
+<div class="take"><b>Result:</b> with a saturated 2-GPU prefill pool, conditional routing cut <b>TTFT p50 from 4.9 s to 0.42 s (11.7×)</b> and request latency by 23%. 860 cache-hit requests were prefilled locally on decode GPUs.</div>
+<figure><img src="../../results/showcase/conditional-disagg-multiturn.svg" alt="Plain vs conditional disaggregation on multi-turn sessions"></figure>
+<div class="take trade"><b>Trade-off:</b> when prefill has headroom, the default thresholds made things worse: ITL p99 up to 2× and requests 18–22% slower, because decode GPUs took on prefill work. It is experimental upstream; tune the thresholds to your workload.</div>
+</section>
+
+<section id="multimodel"><h2>Feature 4 · Multi-model serving and the post-training loop</h2>
+<p class="lead">One Dynamo endpoint served two models at once: the Nemotron 3.5 Lightning teacher and a pruned student from the campus prune → distill experiment. Clients pick one per request.</p>
+<figure><img src="../../results/showcase/nemotron-teacher-vs-pruned.svg" alt="Teacher vs pruned student throughput"></figure>
+<div class="take"><b>Speed:</b> the pruned student (18B total / 2.5B active) delivered <b>+8–17% throughput per GPU</b> and <b>11–21% faster per-user decode</b> with a <b>45% smaller checkpoint</b>.</div>
+<div class="take trade"><b>Quality:</b> before distillation the student degenerates ("code code code…") while the teacher writes a correct function. Prune, then distill, then evaluate, and only then serve. That sequence is the NeMo post-training loop.</div>
+</section>
+
+<section id="version"><h2>Stability is part of performance</h2>
+<p class="lead">On Dynamo 1.3.0 (vLLM 0.23), hybrid DeltaNet models stopped returning tokens at about 7–8 concurrent requests while the GPUs sat half idle. Controls isolated the engine version, and 1.5.0 fixed it.</p>
+<div class="two">
+<figure><img src="../../results/sweeps/20260926-compare-dynamo-1.3-vs-1.5.svg" alt="Dynamo 1.3 vs 1.5"></figure>
+<figure><img src="../../results/sweeps/20260926-compare-chat-1xB300.svg" alt="One B300 comparison"></figure>
+</div>
+<div class="take"><b>Lesson:</b> sweep until failure, record the engine version with every number, and cap gateway concurrency below the measured cliff.</div>
+</section>
+
+<section id="service"><h2>Running it as a campus service</h2>
+<p class="lead">Preemptible Slurm serving so research always wins, per-course keys and quotas at a gateway, opt-in traces only.</p>
+<figure><img src="../diagrams/campus-service.svg" alt="Campus service architecture"></figure>
+</section>
+
+<section id="flywheel"><h2>From usage to campus-tuned models</h2>
+<p class="lead">Consented traces become evaluation sets, then LoRA/SFT/GRPO with NeMo, then adapters served by Dynamo. The Nemotron prune → distill → FP8 lab is the B300 starting point.</p>
+<figure><img src="../diagrams/research-flywheel.svg" alt="Research flywheel"></figure>
+</section>
+
+<section id="repro"><h2>Reproduce on your cluster</h2>
+<pre style="background:#111;color:#eee;padding:18px;border-radius:10px;overflow:auto;font-size:14px">docker compose -f deploy/local/compose.yaml up -d nats etcd
+./scripts/start-showcase.sh agg8            # disagg-2p6d | disagg-4p4d | cdisagg-2p6d
+./scripts/wait-ready.sh 8
+./scripts/showcase-suite.sh agg8-kv 100     # agentic trace + multi-turn sessions
+tools/showcase-report.py --series agg8-kv,agg8-rr --out results/showcase/routing --png</pre>
+<p>Details, tables and caveats: <code>edu/08-dynamo-showcase.md</code>. Program kit: <code>edu/README.md</code>.</p>
+</section>
+
+<footer>Measured 2026-09-26 on dgx10 (8 × NVIDIA B300 SXM6), Dynamo vllm-runtime 1.5.0 (vLLM 0.28.0), AIPerf 0.12.0.
+Single-node, 1–2 repetitions per point; treat differences under about 5% as noise. Open-model benchmarks and licenses: <code>edu/02-model-catalog.md</code>.
+Serve locally with <code>./scripts/serve-recordbook.sh</code> and open <code>/edu/showcase/</code>.</footer>
+</body>
+</html>
