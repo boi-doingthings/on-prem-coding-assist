@@ -350,3 +350,98 @@ Health showed one `prefill.generate` and two `backend.generate` instances, the
 structured `get_weather({"city":"Seattle"})` probe passed, and Pi returned
 exactly `PI_DYNAMO_OK`. Recovery evidence is in
 `artifacts/restarts/20260923T063018Z-job-8005-dgx10/`.
+
+## 2026-09-26 — Session 005: university program kit and the hybrid-model wedge
+
+Job `8352` on `dgx10` (4 × B300; GPU 3 still holds the foreign 1.6 GiB
+process). This session packaged the lab as a reusable university program
+(`edu/`, `deploy/edu/`, `config/edu-models/`, `config/harnesses/`, `tools/`)
+and validated the portable path end to end.
+
+### Portable launcher
+
+`deploy/edu/serve.sh` ran inside the existing Enroot image with
+`--discovery-backend file`: no etcd/NATS, one frontend with KV router, N
+aggregated replicas. Qwen3-0.6B on GPUs 0–1 registered two `backend.generate`
+instances, passed the tool-call smoke test, and the new
+`scripts/sweep-aiperf.sh` ran clean to c128 (18.5K out tok/s/GPU). The router
+logged real `router_mode="kv"` selections in file mode; upstream docs still
+list KV events as unavailable there, so routing experiments use
+`DYNAMO_DISCOVERY=etcd`.
+
+### Sizing estimator calibration
+
+`tools/sizing.py` versus engine-reported KV capacity on one B300:
+Qwen3.5-122B NVFP4 13.81M vs 13.56M (+2%), gpt-oss-20b 9.74M vs 9.21M (+6%),
+Qwen3.6-35B-A3B FP8 9.83M vs 8.90M (+10%; linear-attention state not modelled).
+
+### Root cause localized: hybrid DeltaNet models on vLLM 0.23
+
+- gpt-oss-20b (1.3.0): clean to c128 on chat (16.1K out tok/s/GPU) and c64 on
+  a 16K-token coding-agent profile.
+- Qwen3.6-35B-A3B FP8 (1.3.0): wedged at c8 — 8/32 timeouts, then a 1-token
+  probe hung. No engine error was logged; only client cancellations.
+- Pulled `vllm-runtime:1.5.0` (vLLM 0.28.0, digest `sha256:d7f73fdc…e761`),
+  converted to `.state/enroot/images/dynamo-vllm-1.5.0.sqsh`.
+- Qwen3.6-35B-A3B FP8 (1.5.0): clean to c128 chat (8.9K out tok/s/GPU) and
+  c64 coding-agent.
+- Qwen3.5-122B-A10B NVFP4 (1.5.0), the Session 004 wedge workload (800/64):
+  clean to c32 on **one** B300 — 2,005 out tok/s/GPU at 104 tok/s/user, TTFT
+  p99 486 ms. Session 004's best was 975 tok/s on two GPUs.
+
+Conclusion: the c7 cliff follows the hybrid Gated-DeltaNet models on the
+1.3.0 image, not NIXL, prefix caching, or the hardware. Not bisected; 1.5.0
+tested only aggregated, one GPU, up to c32/c128. Details:
+`results/dynamo-1.5-hybrid-models-2026-09-26.md`; charts under
+`results/sweeps/`. Next: rebuild the 1P/2D and 4-replica deployments on 1.5.0
+and repeat the matrix at higher concurrency.
+
+### Tooling fixes found by using the tools
+
+- `hf download` takes one pattern per `--exclude`; an interrupted download
+  left gpt-oss-20b without `tokenizer.json` while the wrapper reported
+  success. `download-model.sh` now accepts `DYNAMO_DOWNLOAD_ARGS`.
+- The summarizer's `Path.with_suffix` truncated names containing dots
+  (`qwen3.6`, `dyn1.5`) and overwrote outputs; fixed and regenerated.
+- The SVG charts used CSS variables, which cairo/PowerPoint render black; they
+  now use presentation attributes with a browser dark-mode override.
+
+## 2026-09-26 — Session 006: 8 × B300 Dynamo feature showcase
+
+Job `8363` on `dgx10` with all eight B300s (the foreign cuOpt process on GPU 3,
+owned by another account, was started 2026-09-16 outside Slurm; it has since been
+killed. The earlier notebook attribution to job 7339 was wrong: that job ran
+on dgx11). Dynamo `vllm-runtime:1.5.0`, etcd + NATS discovery, Qwen3.5-122B-A10B
+NVFP4 unless stated.
+
+Method: the launcher gained disaggregated roles, extra frontends on the same
+workers, decode-side KV events, multi-model namespaces and port offsets.
+Each run replays either 800 requests from NVIDIA's agentic trace (fetched from
+Git LFS, rows > 250K tokens dropped) or 128 synthetic sessions × 6 turns
+(4K shared + 30K private context). A fresh AIPerf seed per run gives
+identical prefix structure with new token text, so every run is cold;
+`POST /engine/control/clear_kv_blocks` is not registered in this worker mode.
+The prefix-cache hit rate is the delta of `vllm:prefix_cache_{hits,queries}_total`
+across workers.
+
+Results (details and tables in `edu/08-dynamo-showcase.md`, charts in
+`results/showcase/`):
+
+- KV-aware vs round-robin, same 8 aggregated workers: multi-turn sessions
+  70% vs 34% cache hits, +35–51% output tok/s/GPU, 1.7–1.8× faster TTFT p50.
+  Agentic trace +8–21% tok/s/GPU; ITL 11–26% worse (load concentration).
+- Disaggregation: 2P+6D starves prefill on 64K prompts (TTFT 5.7–14 s) but
+  cuts ITL p99 to 9–10 ms; 4P+4D beats 8 aggregated replicas (+12%
+  tok/s/GPU, 19% faster requests at trace c64; +5–9% on sessions).
+- Conditional disaggregation (2P+6D, default `isl_bounding`): trace c64
+  TTFT p50 4.90 → 0.42 s and requests 23% faster (860 bypasses), but worse
+  on sessions where prefill had headroom.
+- Multi-model: the Nemotron 3.5 Lightning BF16 teacher and the pruned
+  2.5B-active student from `../nemotron-3.5-lightning-artifacts` served behind
+  one frontend (separate `DYN_NAMESPACE`; same-namespace registration is
+  rejected). Student +8–17% tok/s/GPU but degenerate output before
+  distillation.
+
+All 32 showcase runs (24 feature comparisons + 8 teacher/student sweeps) completed with 0 errors. The `edu/diagrams/` generator
+produces eight 16:9 architecture diagrams; `edu/showcase/index.html` is the
+projectable summary.

@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 470" role="img" aria-label="nemotron-3.5-lightning-pruned-a2.5b-4xB300-chat" font-family="Helvetica, Arial, sans-serif">
+<style>@media (prefers-color-scheme: dark){.bg{fill:#1a1a19}.mk{stroke:#1a1a19}.grid{stroke:#383835}.t{fill:#ffffff}.txt{fill:#c3c2b7}.slo{stroke:#c3c2b7}.s0 .line{stroke:#3987e5}.s0 .mk{fill:#3987e5}.s1 .line{stroke:#d95926}.s1 .mk{fill:#d95926}.s2 .line{stroke:#199e70}.s2 .mk{fill:#199e70}.s3 .line{stroke:#c98500}.s3 .mk{fill:#c98500}.s4 .line{stroke:#d55181}.s4 .mk{fill:#d55181}.s5 .line{stroke:#008300}.s5 .mk{fill:#008300}.s6 .line{stroke:#9085e9}.s6 .mk{fill:#9085e9}.s7 .line{stroke:#e66767}.s7 .mk{fill:#e66767}}.pt:hover .mk{stroke-width:3}</style>
+<rect class="bg" width="900" height="470" fill="#fcfcfb"/>
+<text class="t" x="72" y="24" fill="#0b0b0b" font-size="15" font-weight="600">nemotron-3.5-lightning-pruned-a2.5b-4xB300-chat</text>
+<text class="txt" x="72" y="42" fill="#52514e" font-size="12">Each point is one concurrency level (label = c). Up and right is better.</text>
+<line class="grid" x1="72.0" y1="56" x2="72.0" y2="414" stroke="#e4e3df" stroke-width="1"/>
+<line class="grid" x1="72" y1="414.0" x2="610" y2="414.0" stroke="#e4e3df" stroke-width="1"/>
+<text class="txt" x="72.0" y="432" fill="#52514e" font-size="12" text-anchor="middle">0</text>
+<text class="txt" x="64" y="418.0" fill="#52514e" font-size="12" text-anchor="end">0</text>
+<line class="grid" x1="179.6" y1="56" x2="179.6" y2="414" stroke="#e4e3df" stroke-width="1"/>
+<line class="grid" x1="72" y1="342.4" x2="610" y2="342.4" stroke="#e4e3df" stroke-width="1"/>
+<text class="txt" x="179.6" y="432" fill="#52514e" font-size="12" text-anchor="middle">80</text>
+<text class="txt" x="64" y="346.4" fill="#52514e" font-size="12" text-anchor="end">1,600</text>
+<line class="grid" x1="287.2" y1="56" x2="287.2" y2="414" stroke="#e4e3df" stroke-width="1"/>
+<line class="grid" x1="72" y1="270.8" x2="610" y2="270.8" stroke="#e4e3df" stroke-width="1"/>
+<text class="txt" x="287.2" y="432" fill="#52514e" font-size="12" text-anchor="middle">160</text>
+<text class="txt" x="64" y="274.8" fill="#52514e" font-size="12" text-anchor="end">3,200</text>
+<line class="grid" x1="394.8" y1="56" x2="394.8" y2="414" stroke="#e4e3df" stroke-width="1"/>
+<line class="grid" x1="72" y1="199.2" x2="610" y2="199.2" stroke="#e4e3df" stroke-width="1"/>
+<text class="txt" x="394.8" y="432" fill="#52514e" font-size="12" text-anchor="middle">240</text>
+<text class="txt" x="64" y="203.2" fill="#52514e" font-size="12" text-anchor="end">4,800</text>
+<line class="grid" x1="502.4" y1="56" x2="502.4" y2="414" stroke="#e4e3df" stroke-width="1"/>
+<line class="grid" x1="72" y1="127.6" x2="610" y2="127.6" stroke="#e4e3df" stroke-width="1"/>
+<text class="txt" x="502.4" y="432" fill="#52514e" font-size="12" text-anchor="middle">320</text>
+<text class="txt" x="64" y="131.6" fill="#52514e" font-size="12" text-anchor="end">6,400</text>
+<line class="grid" x1="610.0" y1="56" x2="610.0" y2="414" stroke="#e4e3df" stroke-width="1"/>
+<line class="grid" x1="72" y1="56.0" x2="610" y2="56.0" stroke="#e4e3df" stroke-width="1"/>
+<text class="txt" x="610.0" y="432" fill="#52514e" font-size="12" text-anchor="middle">400</text>
+<text class="txt" x="64" y="60.0" fill="#52514e" font-size="12" text-anchor="end">8,000</text>
+<text class="txt" x="341" y="456" fill="#52514e" font-size="12" text-anchor="middle">Output tokens/s per user (p50) → more interactive</text>
+<text class="txt" x="0" y="0" fill="#52514e" font-size="12" text-anchor="middle" transform="translate(18 235) rotate(-90)">Output tokens/s per GPU → more users per box</text>
+<line class="slo" x1="98.9" y1="56" x2="98.9" y2="414" stroke="#52514e" stroke-width="1"/>
+<text class="txt" x="102.9" y="68" fill="#52514e" font-size="12" text-anchor="start">SLO ≥ 20 tok/s/user</text>
+<g class="s0"><path class="line" d="M546.0,390.4 L313.6,360.5 L243.0,265.1 L222.3,138.4" fill="none" stroke="#2a78d6" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<g class="pt"><title>nemotron-3.5-lightning-pruned-a2.5b-4xB300-chat — concurrency 8
+528 tok/s/GPU, 352.4 tok/s/user
+TTFT p99 624 ms</title><circle cx="546.0" cy="390.4" r="12" fill="#fcfcfb" fill-opacity="0"/><circle cx="546.0" cy="390.4" r="5" class="mk" fill="#2a78d6" stroke="#fcfcfb" stroke-width="2"/><text class="txt" x="554.0" y="382.4" fill="#52514e" font-size="12" text-anchor="start">c8</text></g>
+<g class="pt"><title>nemotron-3.5-lightning-pruned-a2.5b-4xB300-chat — concurrency 32
+1,195 tok/s/GPU, 179.6 tok/s/user
+TTFT p99 249 ms</title><circle cx="313.6" cy="360.5" r="12" fill="#fcfcfb" fill-opacity="0"/><circle cx="313.6" cy="360.5" r="5" class="mk" fill="#2a78d6" stroke="#fcfcfb" stroke-width="2"/><text class="txt" x="321.6" y="352.5" fill="#52514e" font-size="12" text-anchor="start">c32</text></g>
+<g class="pt"><title>nemotron-3.5-lightning-pruned-a2.5b-4xB300-chat — concurrency 128
+3,328 tok/s/GPU, 127.2 tok/s/user
+TTFT p99 333 ms</title><circle cx="243.0" cy="265.1" r="12" fill="#fcfcfb" fill-opacity="0"/><circle cx="243.0" cy="265.1" r="5" class="mk" fill="#2a78d6" stroke="#fcfcfb" stroke-width="2"/><text class="txt" x="251.0" y="257.1" fill="#52514e" font-size="12" text-anchor="start">c128</text></g>
+<g class="pt"><title>nemotron-3.5-lightning-pruned-a2.5b-4xB300-chat — concurrency 256
+6,159 tok/s/GPU, 111.7 tok/s/user
+TTFT p99 818 ms</title><circle cx="222.3" cy="138.4" r="12" fill="#fcfcfb" fill-opacity="0"/><circle cx="222.3" cy="138.4" r="5" class="mk" fill="#2a78d6" stroke="#fcfcfb" stroke-width="2"/><text class="txt" x="230.3" y="130.4" fill="#52514e" font-size="12" text-anchor="start">c256</text></g>
+</g>
+<g class="s0"><line class="line" x1="630" y1="64" x2="652" y2="64" fill="none" stroke="#2a78d6" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/><circle cx="641.0" cy="64.0" r="5" class="mk" fill="#2a78d6" stroke="#fcfcfb" stroke-width="2"/><text class="txt" x="660" y="68" fill="#52514e" font-size="12" text-anchor="start">nemotron-3.5-lightning-pruned-a2.5b-4xB3</text></g>
+</svg>
